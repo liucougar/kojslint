@@ -65,10 +65,10 @@ window.extensions.KOJSLINT = (function () {
         },
         prefsName = 'kJSLintPrefs', // name of stringPrefence in Komodo's prefs.xml
         prefsObject, // preferences
-		JSON,
-		JSLINT = window.extensions.JSLINT; 
-    
-	JSON = Components.classes["@mozilla.org/dom/json;1"]
+        JSON,
+        JSLINT = window.extensions.JSLINT; 
+
+    JSON = Components.classes["@mozilla.org/dom/json;1"]
                  .createInstance(Components.interfaces.nsIJSON);
 
     // allow old preference objects to work with the latest version of JS Lint    
