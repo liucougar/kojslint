@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <!DOCTYPE overlay PUBLIC "-//MOZILLA//DTD XUL V1.0//EN" "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-<?xml-stylesheet href="chrome://kjslint/skin/kjslint.css" type="text/css"?>
+<?xml-stylesheet href="chrome://kojslint/skin/kjslint.css" type="text/css"?>
 <overlay id="rightpanelOverlay" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-	<script type="application/x-javascript" src="chrome://kjslint/content/jslint.js"/>
-	<script type="application/x-javascript" src="chrome://kjslint/content/kjslint.js"/>
+	<script type="application/x-javascript" src="chrome://kojslint/content/jslint.js"/>
+	<script type="application/x-javascript" src="chrome://kojslint/content/kjslint.js"/>
 	<broadcasterset id="broadcasterset_global">
 		<broadcaster id="cmd_kjslint2" key="key_cmd_kjslint" desc="Tools: Run JS Lint" oncommand="window.extensions.KJSLINT.run();" />
 	</broadcasterset>
