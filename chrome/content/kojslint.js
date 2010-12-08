@@ -9,25 +9,25 @@ if (typeof(window.extensions) === 'undefined') {
 window.extensions.KJSLINT = (function () {
     var constCrockisms = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Your code is gorgeous', 'Crockford loves you', 'No-one\'s feelings hurt', 'No haz lint'], // evidence messages when there are no errors found
         constCrockismsBad = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Slop'], // evidence messages when linting has to stop
-        constCustomOptionsContainerId = 'kjslint2_groupbox_custom_options', // ID of the custom options container
+        constCustomOptionsContainerId = 'kojslint2_groupbox_custom_options', // ID of the custom options container
         constModeHeadingCustom = 'Custom options', // Heading to display above options in custom mode
         constModeHeadingDefault = 'Default mode', // Heading to display above options in default mode
-        constIndentationInputId = 'kjslint2_textbox_indent',
-        constOptionsTabId = 'kjslint2_options_tab', // ID of the options tab
-        constOptionsTabPanelId = 'kjslint2_options_panel', // ID of the options panel
-        constErrorsTabId = 'kjslint2_errors_tab', // ID of the tab for the errors panel in the output panel
+        constIndentationInputId = 'kojslint2_textbox_indent',
+        constOptionsTabId = 'kojslint2_options_tab', // ID of the options tab
+        constOptionsTabPanelId = 'kojslint2_options_panel', // ID of the options panel
+        constErrorsTabId = 'kojslint2_errors_tab', // ID of the tab for the errors panel in the output panel
         constErrorsTabText = 'JSLint errors', // title text for the tab for the errors panel in the output panel
-        constErrorsTreechildrenId = 'kjslint2_errors_treechildren', // ID of the errors treechildren
-        constErrorsTreeId = 'kjslint2_errors_tree', // ID of the errors tree
-        constFunctionsTabId = 'kjslint2_functions_tab', // ID of the functions tab
+        constErrorsTreechildrenId = 'kojslint2_errors_treechildren', // ID of the errors treechildren
+        constErrorsTreeId = 'kojslint2_errors_tree', // ID of the errors tree
+        constFunctionsTabId = 'kojslint2_functions_tab', // ID of the functions tab
         constFunctionsTabText = 'JSLint report', // title text for the tab for the errors panel in the output panel
-        constFunctionsTreechildrenId = 'kjslint2_functions_treechildren', // ID of the functions treechildren
-        constFunctionsTreeId = 'kjslint2_functions_tree', // ID of the functions tree
-        constMaxErrInputId = 'kjslint2_textbox_maxerr', // ID of the max errors input
-        constMaxLenInputId = 'kjslint2_textbox_maxlen', // ID of the max line length input
-        constOptionsHeadingId = 'kjslint2_h4_custom', // ID of the options heading element
-        constOptionsRadiosId = 'kjslint2_radiogroup_presets', // ID of the modes options radiogroup
-        constPredefInputId = 'kjslint2_textbox_predef', // ID of the predef input
+        constFunctionsTreechildrenId = 'kojslint2_functions_treechildren', // ID of the functions treechildren
+        constFunctionsTreeId = 'kojslint2_functions_tree', // ID of the functions tree
+        constMaxErrInputId = 'kojslint2_textbox_maxerr', // ID of the max errors input
+        constMaxLenInputId = 'kojslint2_textbox_maxlen', // ID of the max line length input
+        constOptionsHeadingId = 'kojslint2_h4_custom', // ID of the options heading element
+        constOptionsRadiosId = 'kojslint2_radiogroup_presets', // ID of the modes options radiogroup
+        constPredefInputId = 'kojslint2_textbox_predef', // ID of the predef input
         currentPath, // path to the current file
         elCustomOptionsContainer, // reference to the container of the Custom options
         elErrorsTab, // reference to the tab element for the errors panel
@@ -157,7 +157,7 @@ window.extensions.KJSLINT = (function () {
             thePref = theCheckbox.id;
             theCheckbox.disabled = false;
             //theCheckbox.checked = prefsObject[currentPath][thePref];
-            if (theCheckbox.className !== 'kjslint_checkbox defaultOption') {
+            if (theCheckbox.className !== 'kojslint_checkbox defaultOption') {
                 theCheckbox.parentNode.className = '';
             }
         } 
@@ -178,7 +178,7 @@ window.extensions.KJSLINT = (function () {
             theCheckbox.checked = options[thePref];
             
             prefsObject[currentPath][thePref] = options[thePref];
-            if (theCheckbox.className !== 'kjslint_checkbox defaultOption') {
+            if (theCheckbox.className !== 'kojslint_checkbox defaultOption') {
                 theCheckbox.parentNode.className = 'hidden';
                 theCheckbox.checked = false;
             }
@@ -366,8 +366,8 @@ window.extensions.KJSLINT = (function () {
             }
             
             // I need to subtract 1
-            lineNumber = elErrorsTree.view.getCellText(elErrorsTree.currentIndex, elErrorsTree.columns.getNamedColumn('kjslint2_errors_tree_line')) - 1;
-            colNumber = elErrorsTree.view.getCellText(elErrorsTree.currentIndex, elErrorsTree.columns.getNamedColumn('kjslint2_errors_tree_char')) - 1;
+            lineNumber = elErrorsTree.view.getCellText(elErrorsTree.currentIndex, elErrorsTree.columns.getNamedColumn('kojslint2_errors_tree_line')) - 1;
+            colNumber = elErrorsTree.view.getCellText(elErrorsTree.currentIndex, elErrorsTree.columns.getNamedColumn('kojslint2_errors_tree_char')) - 1;
             
             if (lineNumber) {
                 view.setFocus();        
@@ -404,7 +404,7 @@ window.extensions.KJSLINT = (function () {
             }
             
             // I need to subtract 1
-            lineNumber = elFunctionsTree.view.getCellText(elFunctionsTree.currentIndex, elFunctionsTree.columns.getNamedColumn('kjslint2_functions_tree_line')) - 1;
+            lineNumber = elFunctionsTree.view.getCellText(elFunctionsTree.currentIndex, elFunctionsTree.columns.getNamedColumn('kojslint2_functions_tree_line')) - 1;
             
             if (lineNumber) {
                 view.setFocus();        

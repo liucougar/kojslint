@@ -1,0 +1,29 @@
+/*#kojslint_options_panel {
+  overflow: auto;
+  padding-top:10px;
+} */
+
+#kojslint2_options_panel #kojslint2_vbox_indent {
+  display: block;
+  margin-bottom: 6px;
+  width: 20px;
+}
+
+#kojslint2_options_panel #kojslint2_vbox_maxlen,
+#kojslint2_options_panel #kojslint2_vbox_maxerr {
+  display: block;
+  margin-bottom: 6px;
+  width: 30px;
+}
+
+.hidden {
+  display: none;
+}
+
+#kojslint2_options_panel input {
+  cursor: text;
+}
+
+#kojslint2_image_iconInfo {
+ list-style-image: url(chrome://kojslint/skin/icon-info.png); 
+}
