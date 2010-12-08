@@ -7,13 +7,13 @@ if (typeof(window.extensions) === 'undefined') {
 }
 
 if(!window.extensions.KOJSLINT){
-	window.extensions.KOJSLINT = {mixin: function(o, p){
-		for(var i in p){
-			if(p.hasOwnProperty(i)){
-				o[i] = p[i];
-			}
-		}
-	}};
+    window.extensions.KOJSLINT = {mixin: function(o, p){
+        for(var i in p){
+            if(p.hasOwnProperty(i)){
+                o[i] = p[i];
+            }
+        }
+    }};
 }
 
 (function () {
@@ -38,7 +38,7 @@ if(!window.extensions.KOJSLINT){
         constOptionsHeadingId = 'kojslint2_h4_custom', // ID of the options heading element
         constOptionsRadiosId = 'kojslint2_radiogroup_presets', // ID of the modes options radiogroup
         constPredefInputId = 'kojslint2_textbox_predef', // ID of the predef input
-        currentPath, // path to the current file
+        currentPath='custom', // path to the current file
         elCustomOptionsContainer, // reference to the container of the Custom options
         elErrorsTab, // reference to the tab element for the errors panel
         elErrorsTree, // reference to the tree containing the errors
@@ -109,12 +109,14 @@ if(!window.extensions.KOJSLINT){
             theCheckbox, // current checkbox
             thePref; // current preference
         
+//         currentPath = 'custom';
+
         elOptionsHeading.setAttribute('label', constModeHeadingCustom);      
         for (i = 0; i < length; i += 1) {
             theCheckbox = elsOptionsCheckboxes[i];
             thePref = theCheckbox.id;
             theCheckbox.disabled = false;
-            //theCheckbox.checked = prefsObject[currentPath][thePref];
+            theCheckbox.checked = prefsObject[currentPath][thePref];
             if (theCheckbox.className !== 'kojslint_checkbox defaultOption') {
                 theCheckbox.parentNode.className = '';
             }
@@ -150,11 +152,15 @@ if(!window.extensions.KOJSLINT){
     
     // when the custom option is selected
     function eventCustomModeClicked() {
+        currentPath = 'custom';
+        prefsGetFilePrefs();
         enterCustomMode();
     }
     
     // when the default option is selected
     function eventDefaultModeClicked() {
+        currentPath = 'default';
+        prefsGetFilePrefs();
         enterDefaultMode();
     }
     
@@ -305,7 +311,7 @@ if(!window.extensions.KOJSLINT){
     
     // when a tab is changed
     function eventTabChanged(e) {
-        currentPath = getCurrentPath(e.originalTarget);
+//         setCurrentPath(e.originalTarget);
         prefsGetFilePrefs();
         updateOptionsPanel();
     }
@@ -446,7 +452,7 @@ if(!window.extensions.KOJSLINT){
             length,
             theCheckbox;
 
-        currentPath = getCurrentPath(ko.views.manager.currentView);
+//         setCurrentPath(ko.views.manager.currentView);
         if (!prefsObject[currentPath]) {
             prefsObject[currentPath] = {};
             length = elsOptionsCheckboxes.length;
@@ -500,12 +506,11 @@ if(!window.extensions.KOJSLINT){
         fileSavedobserver.unregister();
     }
     
-    function getCurrentPath(view){
-	return 'temp';
+    function getCurrentFilePath(view){
         // if a new file is created, it doesn't have a path
         try{
             return view.document.file.URI.replace(/\"/g, '');
-	}catch(e){
+        }catch(e){
             return 'temp';
         }
     }
@@ -514,7 +519,7 @@ if(!window.extensions.KOJSLINT){
     function observeWindowEvents() {
         getElements();
         
-	currentPath = 'temp';//getCurrentPath(ko.views.manager.currentView)
+//         currentPath = 'temp';//getCurrentPath(ko.views.manager.currentView)
 
         prefsGetFilePrefs();
         window.addEventListener('current_view_changed', eventTabChanged, false);
