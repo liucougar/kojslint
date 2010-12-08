@@ -1,0 +1,3 @@
+content     kjslint    chrome/content/
+skin	kjslint	classic/1.0	chrome/skin/
+overlay chrome://komodo/content/komodo.xul chrome://kjslint/content/kjslint2.xul

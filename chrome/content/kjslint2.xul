@@ -1,0 +1,236 @@
+<?xml version="1.0"?>
+<!DOCTYPE overlay PUBLIC "-//MOZILLA//DTD XUL V1.0//EN" "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<?xml-stylesheet href="chrome://kjslint/skin/kjslint.css" type="text/css"?>
+<overlay id="rightpanelOverlay" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://kjslint/content/jslint.js"/>
+	<script type="application/x-javascript" src="chrome://kjslint/content/kjslint.js"/>
+	<broadcasterset id="broadcasterset_global">
+		<broadcaster id="cmd_kjslint2" key="key_cmd_kjslint" desc="Tools: Run JS Lint" oncommand="window.extensions.KJSLINT.run();" />
+	</broadcasterset>
+	<menupopup id="popup_tools">
+		<menu id="kjslint2-menu" label="JS Lint">
+			<menupopup id="kjslint2-popup">
+				<menuitem id="menu_jslint2_run" oncommand="window.extensions.KJSLINT.run();" label="Run" class="menu-iconic-wide" observes="cmd_kjslint" />
+				<menuitem id="menu_jslint2_options" oncommand="window.extensions.KJSLINT.viewShowOptions();" label="Options" />
+			</menupopup>
+		</menu>
+	</menupopup>
+	<tabs id="right_toolbox_tabs">
+		<tab type="file-tab" id="kjslint2_options_tab" label="JS Lint options" oncommand="" onfocus="ko.toolboxes.user.viewMgr.focus();" />
+	</tabs>
+	<tabpanels id="right_toolbox_tabpanels">
+		<tabpanel id="kjslint2_options_panel" flex="1" minwidth="355">
+			<vbox flex="1" style="overflow:auto;"> 
+				<groupbox>
+					<caption id="kjslint2_h4_mode" label="Mode" />
+					<stack>
+						<radiogroup id="kjslint2_radiogroup_presets">
+							<radio id="kjslint2_radio_default" label="Default (The Good Parts)" value="default" />
+							<radio id="kjslint2_radio_custom" label="Custom" value="custom" />
+						</radiogroup>
+					</stack>
+					<groupbox id="kjslint2_groupbox_custom_options">
+						<caption id="kjslint2_h4_custom" label="Custom options" />
+						<hbox>
+							<checkbox id="passfail" class="kjslint_checkbox" />
+							<label control="passfail" value="Stop on first error" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="white" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="white" value="Strict white space" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="browser" class="kjslint_checkbox" />
+							<label control="browser" value="Assume a browser" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="devel" class="kjslint_checkbox" />
+							<label control="devel" value="Assume console, alert, ..." class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="widget" class="kjslint_checkbox" />
+							<label control="widget" value="Assume a Yahoo Widget" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="windows" class="kjslint_checkbox" />
+							<label control="windows" value="Assume Windows" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="rhino" class="kjslint_checkbox" />
+							<label control="rhino" value="Assume Rhino" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="safe" class="kjslint_checkbox" />
+							<label control="safe" value="Safe Subset" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="adsafe" class="kjslint_checkbox" />
+							<label control="adsafe" value="ADsafe" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="debug" class="kjslint_checkbox" />
+							<label control="debug" value="Tolerate debugger statements" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="evil" class="kjslint_checkbox" />
+							<label control="evil" value="Tolerate eval" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="laxbreak" class="kjslint_checkbox" />
+							<label control="laxbreak" value="Tolerate sloppy line breaking" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="forin" class="kjslint_checkbox" />
+							<label control="forin" value="Tolerate unfiltered for in" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="sub" class="kjslint_checkbox" />
+							<label control="sub" value="Tolerate inefficient subscripting" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="css" class="kjslint_checkbox" />
+							<label control="css" value="Tolerate CSS workarounds" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="cap" class="kjslint_checkbox" />
+							<label control="cap" value="Tolerate HTML case" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="on" class="kjslint_checkbox" />
+							<label control="on" value="Tolerate HTML event handlers" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="fragment" class="kjslint_checkbox" />
+							<label control="fragment" value="Tolerate HTML fragments" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="es5" class="kjslint_checkbox" />
+							<label control="es5" value="Tolerate ES5 syntax" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="onevar" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="onevar" value="Allow one var statement per function" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="undef" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="undef" value="Disallow undefined variables" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="nomen" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="nomen" value="Disallow dangling _ in identifiers" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="eqeqeq" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="eqeqeq" value="Disallow == and !=" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="plusplus" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="plusplus" value="Disallow ++ and --" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="bitwise" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="bitwise" value="Disallow bitwise operators" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="regexp" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="regexp" value="Disallow insecure . and [^...] in /RegExp/" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="newcap" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="newcap" value="Require Initial Caps for constructors" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="immed" checked="true" class="kjslint_checkbox defaultOption" />
+							<label control="immed" value="Require parens around immediate invocations" class="kjslint_label" />
+						</hbox>
+						<hbox>
+							<checkbox id="strict" class="kjslint_checkbox defaultOption" />
+							<label control="strict" value="Require 'use strict';" class="kjslint_label" />
+						</hbox>
+					</groupbox>
+				</groupbox>
+				<groupbox>
+					<caption id="kjslint2_h4_further" label="Further options" />
+					<vbox class="last">
+						<label control="kjslint2_textbox_indent" value="Strict white space indentation"/>
+						<vbox id="kjslint2_vbox_indent" indentValue="4" style="max-width:500px">
+							<textbox id="kjslint2_textbox_indent" value="4" maxlength="2" size="2" type="number" />
+						</vbox>
+					</vbox>
+					<vbox class="last">
+                        <hbox>
+                            <label control="kjslint2_textbox_maxlen" value="Maximum line length"/>
+                            <stack>
+                                <image id="kjslint2_image_iconInfo" style="cursor:help;" tooltiptext="Set to 0 to allow any line length" top="1" />
+                            </stack>
+                        </hbox>
+                        <vbox id="kjslint2_vbox_maxlen">
+							<textbox id="kjslint2_textbox_maxlen" maxlength="3" size="3" type="number" value="150" />
+						</vbox>
+					</vbox>
+					<vbox class="last">
+						<label control="kjslint2_textbox_maxerr" value="Maximum number of errors"/>
+						<vbox id="kjslint2_vbox_maxerr">
+							<textbox id="kjslint2_textbox_maxerr" maxlength="3" size="3" type="number" value="50" />
+						</vbox>
+					</vbox>
+					<vbox class="last">
+						<label control="kjslint2_textbox_predef" value="Predefined ( , separated)"/>
+						<vbox id="kjslint2_vbox_predefContainer">
+							<textbox id="kjslint2_textbox_predef" size="140" />
+						</vbox>
+					</vbox>
+				</groupbox>
+				<stack>
+				<button id="mine" autostretch="never" left="0" top="5" label="Run JS Lint" oncommand="window.extensions.KJSLINT.run();" width="100" minwidth="0" />
+				</stack>
+			</vbox>
+		</tabpanel>
+	</tabpanels>
+	<tabs id="output_tabs">
+		<tab id="kjslint2_errors_tab" label="JSLint errors" onfocus="window.extensions.KJSLINT.viewErrorsFocus();"/>
+		<tab id="kjslint2_functions_tab" label="JSLint report" onfocus="window.extensions.KJSLINT.viewFunctionsFocus();"/>
+	</tabs>
+	<tabpanels id="output_tabpanels">
+		<tabpanel id="kjslint2_errors_tabpanel" orient="vertical" flex="1">
+			<tree enableColumnDrag="true" flex="1" id="kjslint2_errors_tree">
+				<treecols>
+					<treecol id="kjslint2_errors_tree_line" label="Line" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_errors_tree_char" label="Char" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol flex="1" id="kjslint2_errors_tree_error" label="Error" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol flex="1" id="kjslint2_errors_tree_evidence" label="Evidence" persist="width ordinal hidden" />
+				</treecols>
+				<treechildren id="kjslint2_errors_treechildren"></treechildren>
+			</tree>
+		</tabpanel>
+		<tabpanel id="kjslint2_functions_tabpanel" orient="vertical" flex="1">
+			<tree enableColumnDrag="true" flex="1" id="kjslint2_functions_tree">
+				<treecols>
+					<treecol id="kjslint2_functions_tree_line" label="Line" flex="1" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_name" label="Name" flex="3" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_parameters" label="Parameters" flex="2" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_closure" label="Closure" flex="3" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_variables" label="Variables" flex="2" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_exceptions" label="Exceptions" flex="2" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_unused" label="Unused" flex="2" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_outer" label="Outer" flex="2" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_global" label="Global" flex="2" persist="width ordinal hidden" />
+					<splitter class="tree-splitter" />  
+					<treecol id="kjslint2_functions_tree_label" label="Label" flex="2" persist="width ordinal hidden" />
+				</treecols>
+				<treechildren id="kjslint2_functions_treechildren"></treechildren>
+			</tree>
+		</tabpanel>
+	</tabpanels>
+</overlay>
