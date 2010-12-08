@@ -6,7 +6,17 @@ if (typeof(window.extensions) === 'undefined') {
     window.extensions = {};
 }
 
-window.extensions.KOJSLINT = (function () {
+if(!window.extensions.KOJSLINT){
+	window.extensions.KOJSLINT = {mixin: function(o, p){
+		for(var i in p){
+			if(p.hasOwnProperty(i)){
+				o[i] = p[i];
+			}
+		}
+	}};
+}
+
+(function () {
     var constCrockisms = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Your code is gorgeous', 'Crockford loves you', 'No-one\'s feelings hurt', 'No haz lint'], // evidence messages when there are no errors found
         constCrockismsBad = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Slop'], // evidence messages when linting has to stop
         constCustomOptionsContainerId = 'kojslint2_groupbox_custom_options', // ID of the custom options container
@@ -65,11 +75,10 @@ window.extensions.KOJSLINT = (function () {
         },
         prefsName = 'koJSLintPrefs', // name of stringPrefence in Komodo's prefs.xml
         prefsObject, // preferences
-        JSON,
-        JSLINT = window.extensions.JSLINT; 
-
-    JSON = Components.classes["@mozilla.org/dom/json;1"]
-                 .createInstance(Components.interfaces.nsIJSON);
+        JSON = Components.classes['@mozilla.org/dom/json;1']
+                 .createInstance(Components.interfaces.nsIJSON),
+        JSLINT = window.extensions.JSLINT,
+        KOJSLINT = window.extensions.KOJSLINT; 
 
     // allow old preference objects to work with the latest version of JS Lint    
     function convertObjectToLatestVersion(o) {
@@ -915,7 +924,7 @@ window.extensions.KOJSLINT = (function () {
         return JSLINT.data();
     }
     
-    return {
+    KOJSLINT.mixin(KOJSLINT, {
         
         expose : expose,
         
@@ -929,7 +938,7 @@ window.extensions.KOJSLINT = (function () {
         viewFunctionsFocus : viewFunctionsFocus,
         
         viewShowOptions : viewShowOptions
-    };
+    });
 }());
 
 window.addEventListener('load', window.extensions.KOJSLINT, false);
