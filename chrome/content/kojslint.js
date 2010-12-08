@@ -1,6 +1,6 @@
 'use strict';
 
-// add kJSLint to the recommended Komodo extensions namespace
+// add koJSLint to the recommended Komodo extensions namespace
 // @see http://www.openkomodo.com/blogs/jeffg/namespaces-please
 if (typeof(window.extensions) === 'undefined') {
     window.extensions = {};
@@ -63,7 +63,7 @@ window.extensions.KOJSLINT = (function () {
             strict : true, // require the "use strict"; pragma
             white : true // if strict whitespace rules apply
         },
-        prefsName = 'kJSLintPrefs', // name of stringPrefence in Komodo's prefs.xml
+        prefsName = 'koJSLintPrefs', // name of stringPrefence in Komodo's prefs.xml
         prefsObject, // preferences
         JSON,
         JSLINT = window.extensions.JSLINT; 
