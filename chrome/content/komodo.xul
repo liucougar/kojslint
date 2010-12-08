@@ -5,13 +5,13 @@
 	<script type="application/x-javascript" src="chrome://kojslint/content/jslint.js"/>
 	<script type="application/x-javascript" src="chrome://kojslint/content/kojslint.js"/>
 	<broadcasterset id="broadcasterset_global">
-		<broadcaster id="cmd_kojslint2" key="key_cmd_kojslint" desc="Tools: Run JS Lint" oncommand="window.extensions.KJSLINT.run();" />
+		<broadcaster id="cmd_kojslint2" key="key_cmd_kojslint" desc="Tools: Run JS Lint" oncommand="window.extensions.KOJSLINT.run();" />
 	</broadcasterset>
 	<menupopup id="popup_tools">
 		<menu id="kojslint2-menu" label="JS Lint">
 			<menupopup id="kojslint2-popup">
-				<menuitem id="menu_jslint2_run" oncommand="window.extensions.KJSLINT.run();" label="Run" class="menu-iconic-wide" observes="cmd_kojslint" />
-				<menuitem id="menu_jslint2_options" oncommand="window.extensions.KJSLINT.viewShowOptions();" label="Options" />
+				<menuitem id="menu_jslint2_run" oncommand="window.extensions.KOJSLINT.run();" label="Run" class="menu-iconic-wide" observes="cmd_kojslint" />
+				<menuitem id="menu_jslint2_options" oncommand="window.extensions.KOJSLINT.viewShowOptions();" label="Options" />
 			</menupopup>
 		</menu>
 	</menupopup>
@@ -182,14 +182,14 @@
 					</vbox>
 				</groupbox>
 				<stack>
-				<button id="mine" autostretch="never" left="0" top="5" label="Run JS Lint" oncommand="window.extensions.KJSLINT.run();" width="100" minwidth="0" />
+				<button id="mine" autostretch="never" left="0" top="5" label="Run JS Lint" oncommand="window.extensions.KOJSLINT.run();" width="100" minwidth="0" />
 				</stack>
 			</vbox>
 		</tabpanel>
 	</tabpanels>
 	<tabs id="output_tabs">
-		<tab id="kojslint2_errors_tab" label="JSLint errors" onfocus="window.extensions.KJSLINT.viewErrorsFocus();"/>
-		<tab id="kojslint2_functions_tab" label="JSLint report" onfocus="window.extensions.KJSLINT.viewFunctionsFocus();"/>
+		<tab id="kojslint2_errors_tab" label="JSLint errors" onfocus="window.extensions.KOJSLINT.viewErrorsFocus();"/>
+		<tab id="kojslint2_functions_tab" label="JSLint report" onfocus="window.extensions.KOJSLINT.viewFunctionsFocus();"/>
 	</tabs>
 	<tabpanels id="output_tabpanels">
 		<tabpanel id="kojslint2_errors_tabpanel" orient="vertical" flex="1">

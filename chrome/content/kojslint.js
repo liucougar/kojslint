@@ -6,7 +6,7 @@ if (typeof(window.extensions) === 'undefined') {
     window.extensions = {};
 }
 
-window.extensions.KJSLINT = (function () {
+window.extensions.KOJSLINT = (function () {
     var constCrockisms = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Your code is gorgeous', 'Crockford loves you', 'No-one\'s feelings hurt', 'No haz lint'], // evidence messages when there are no errors found
         constCrockismsBad = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Slop'], // evidence messages when linting has to stop
         constCustomOptionsContainerId = 'kojslint2_groupbox_custom_options', // ID of the custom options container
@@ -919,7 +919,7 @@ window.extensions.KJSLINT = (function () {
         
         expose : expose,
         
-        // this automatically gets called as a result of passing the KJSLINT object to the eventlistener
+        // this automatically gets called as a result of passing the KOJSLINT object to the eventlistener
         handleEvent : init,
         
         run : run,
@@ -932,4 +932,4 @@ window.extensions.KJSLINT = (function () {
     };
 }());
 
-window.addEventListener('load', window.extensions.KJSLINT, false);
+window.addEventListener('load', window.extensions.KOJSLINT, false);
