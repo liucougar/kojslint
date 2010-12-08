@@ -38,7 +38,7 @@ if(!window.extensions.KOJSLINT){
         constOptionsHeadingId = 'kojslint2_h4_custom', // ID of the options heading element
         constOptionsRadiosId = 'kojslint2_radiogroup_presets', // ID of the modes options radiogroup
         constPredefInputId = 'kojslint2_textbox_predef', // ID of the predef input
-        currentPath='custom', // path to the current file
+        currentConfName='custom', // path to the current file
         elCustomOptionsContainer, // reference to the container of the Custom options
         elErrorsTab, // reference to the tab element for the errors panel
         elErrorsTree, // reference to the tree containing the errors
@@ -109,14 +109,14 @@ if(!window.extensions.KOJSLINT){
             theCheckbox, // current checkbox
             thePref; // current preference
         
-//         currentPath = 'custom';
+//         currentConfName = 'custom';
 
         elOptionsHeading.setAttribute('label', constModeHeadingCustom);      
         for (i = 0; i < length; i += 1) {
             theCheckbox = elsOptionsCheckboxes[i];
             thePref = theCheckbox.id;
             theCheckbox.disabled = false;
-            theCheckbox.checked = prefsObject[currentPath][thePref];
+            theCheckbox.checked = prefsObject[currentConfName][thePref];
             if (theCheckbox.className !== 'kojslint_checkbox defaultOption') {
                 theCheckbox.parentNode.className = '';
             }
@@ -137,7 +137,7 @@ if(!window.extensions.KOJSLINT){
             thePref = theCheckbox.id;
             theCheckbox.checked = options[thePref];
             
-            prefsObject[currentPath][thePref] = options[thePref];
+            prefsObject[currentConfName][thePref] = options[thePref];
             if (theCheckbox.className !== 'kojslint_checkbox defaultOption') {
                 theCheckbox.parentNode.className = 'hidden';
                 theCheckbox.checked = false;
@@ -152,21 +152,21 @@ if(!window.extensions.KOJSLINT){
     
     // when the custom option is selected
     function eventCustomModeClicked() {
-        currentPath = 'custom';
+        currentConfName = 'custom';
         prefsGetFilePrefs();
         enterCustomMode();
     }
     
     // when the default option is selected
     function eventDefaultModeClicked() {
-        currentPath = 'default';
+        currentConfName = 'default';
         prefsGetFilePrefs();
         enterDefaultMode();
     }
     
     // update a preference
     function prefsSet(pref, val) {
-        prefsObject[currentPath][pref] = val;
+        prefsObject[currentConfName][pref] = val;
     }
     
     // when the indentation input has been changed
@@ -219,7 +219,7 @@ if(!window.extensions.KOJSLINT){
             theCheckbox = e.target;
         }            
         if (!theCheckbox.disabled) {
-            prefsObject[currentPath][theCheckbox.id] = theCheckbox.checked;
+            prefsObject[currentConfName][theCheckbox.id] = theCheckbox.checked;
         }
     }
     
@@ -272,7 +272,7 @@ if(!window.extensions.KOJSLINT){
         for (i = 0; i < length; i += 1) {
             currBox = elsOptionsCheckboxes[i];
             currId = currBox.id;
-            if (prefsObject[currentPath][currId] !== options[currId]) {
+            if (prefsObject[currentConfName][currId] !== options[currId]) {
                 defaultMode = false;
                 
                 break;
@@ -285,10 +285,10 @@ if(!window.extensions.KOJSLINT){
             enterCustomMode();
         }
         
-        elIndentationInput.value = prefsObject[currentPath].indent;
-        elMaxErrInput.value = prefsObject[currentPath].maxerr;
-        elMaxLenInput.value = prefsObject[currentPath].maxlen;
-        elPredefInput.value = prefsObject[currentPath].predef;
+        elIndentationInput.value = prefsObject[currentConfName].indent;
+        elMaxErrInput.value = prefsObject[currentConfName].maxerr;
+        elMaxLenInput.value = prefsObject[currentConfName].maxlen;
+        elPredefInput.value = prefsObject[currentConfName].predef;
     }
     
     // get the preferences for the file at the current view
@@ -296,14 +296,14 @@ if(!window.extensions.KOJSLINT){
         var property,
             tempObj;
             
-        if (!prefsObject[currentPath]) {
-            prefsObject[currentPath] = {};
+        if (!prefsObject[currentConfName]) {
+            prefsObject[currentConfName] = {};
             
             // make a deep copy of the options object and assign it
             tempObj = copyObject(options);
             for (property in tempObj) {
                 if (options.hasOwnProperty(property)) {
-                    prefsObject[currentPath][property] = tempObj[property];
+                    prefsObject[currentConfName][property] = tempObj[property];
                 }
             }
         }
@@ -426,12 +426,12 @@ if(!window.extensions.KOJSLINT){
         var keep = false, // set to false if we want to remove the preference
             property;
 
-        for (property in prefsObject[currentPath]) {
-            if (prefsObject[currentPath][property] !== options[property]) {
+        for (property in prefsObject[currentConfName]) {
+            if (prefsObject[currentConfName][property] !== options[property]) {
                 if (property === 'predef') {
                     
                     // I'm sure there is a better way to do this
-                    if (!prefsObject[currentPath][property] || (JSON.encode(prefsObject[currentPath][property]) === '[""]')) {
+                    if (!prefsObject[currentConfName][property] || (JSON.encode(prefsObject[currentConfName][property]) === '[""]')) {
                         
                         continue;
                     }
@@ -442,7 +442,7 @@ if(!window.extensions.KOJSLINT){
             }
         }
         if (!keep) {
-            delete prefsObject[currentPath];
+            delete prefsObject[currentConfName];
         }
     }
     
@@ -453,17 +453,17 @@ if(!window.extensions.KOJSLINT){
             theCheckbox;
 
 //         setCurrentPath(ko.views.manager.currentView);
-        if (!prefsObject[currentPath]) {
-            prefsObject[currentPath] = {};
+        if (!prefsObject[currentConfName]) {
+            prefsObject[currentConfName] = {};
             length = elsOptionsCheckboxes.length;
             for (i = 0; i < length; i += 1) {
                 theCheckbox = elsOptionsCheckboxes[i];
-                prefsObject[currentPath][theCheckbox.id] = theCheckbox.checked;
+                prefsObject[currentConfName][theCheckbox.id] = theCheckbox.checked;
             }
-            prefsObject[currentPath].indent = elIndentationInput.value;
-            prefsObject[currentPath].maxlen = elMaxLenInput.value;
-            prefsObject[currentPath].maxerr = elMaxErrInput.value;
-            prefsObject[currentPath].predef = elPredefInput.value.split(' ').join('').split(',');
+            prefsObject[currentConfName].indent = elIndentationInput.value;
+            prefsObject[currentConfName].maxlen = elMaxLenInput.value;
+            prefsObject[currentConfName].maxerr = elMaxErrInput.value;
+            prefsObject[currentConfName].predef = elPredefInput.value.split(' ').join('').split(',');
         }
     }
     
@@ -519,7 +519,7 @@ if(!window.extensions.KOJSLINT){
     function observeWindowEvents() {
         getElements();
         
-//         currentPath = 'temp';//getCurrentPath(ko.views.manager.currentView)
+//         currentConfName = 'temp';//getCurrentPath(ko.views.manager.currentView)
 
         prefsGetFilePrefs();
         window.addEventListener('current_view_changed', eventTabChanged, false);
@@ -889,7 +889,7 @@ if(!window.extensions.KOJSLINT){
         var myResult;
         
         window.setCursor('wait');
-        myResult = JSLINT(ko.views.manager.currentView.document.buffer, prefsObject[currentPath]);
+        myResult = JSLINT(ko.views.manager.currentView.document.buffer, prefsObject[currentConfName]);
         viewShow(JSLINT.data());
         window.setCursor('default');  
     }
@@ -924,7 +924,7 @@ if(!window.extensions.KOJSLINT){
     }
     
     function expose() {
-        var myResult = JSLINT(ko.views.manager.currentView.document.buffer, prefsObject[currentPath]);
+        var myResult = JSLINT(ko.views.manager.currentView.document.buffer, prefsObject[currentConfName]);
             
         return JSLINT.data();
     }
