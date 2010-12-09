@@ -366,19 +366,37 @@ if(!window.extensions.KOJSLINT){
         var sm = view.scimoz;
         var line = result.line - 1;
         var txt=getLineText(view,line);
-        //ignore checking for "Bad line breaking before '{a}'.", it will be handled below
-        if(result.raw !== "Bad line breaking before '{a}'." && 
-            result.evidence !== txt.substr(0, result.evidence.length) && 
-            /\s/.test(txt.substr(result.evidence.length))){
-            alert('Stoped: Line is changed! ');
-            return;
-        }
         var startpos = sm.positionAtColumn(line,0);
         var errorpos = sm.positionAtColumn(line,result.character-1);
         var endpos = sm.getLineEndPosition(line);
+        
+        function lineIsChanged(full){
+            var len, error;
+            if(full){
+                len = result.evidence.length;
+                if(!/^\s*$/.test(txt.substr(len))){
+                    error = 1;
+                }
+            }else{
+                len = errorpos - startpos;
+            }
+            if(!error){
+                if(result.evidence.substr(0, len) !== txt.substr(0, len)){
+                    error = 2;
+                }
+            }
+            if(error){
+                alert('Stoped: Line is changed! ');
+                return true;
+            }
+            return false;
+        }
 //         alert(txt+' '+startpos+' '+errorpos+' '+endpos);
         switch(result.raw){
             case 'Missing semicolon.':
+                if(lineIsChanged(true)){
+                    return;
+                }
                 //ko.dialogs.alert(txt.slice(-2,-1)); 
 //                 if(txt && ! /;[\s\n\r]*$/.test(txt)){ //prevent double insert
                     sm.insertText(errorpos,';');
@@ -386,6 +404,9 @@ if(!window.extensions.KOJSLINT){
 //                 }
                 break;
             case "Use '{a}' to compare with '{b}'.":
+                if(lineIsChanged(true)){
+                    return;
+                }
                 if(result.a){
                     var op=result.a.substr(0,2),i=0;
                     var compwith=result.b;
@@ -429,6 +450,9 @@ if(!window.extensions.KOJSLINT){
                 }
                 break;
             case "Expected '{a}' and instead saw '{b}'.":
+                if(lineIsChanged()){
+                    return;
+                }
                 sm.gotoPos(errorpos);
                 sm.selectionStart = errorpos;
                 sm.selectionEnd = errorpos + result.b.length;
@@ -452,11 +476,19 @@ if(!window.extensions.KOJSLINT){
 //                 sm.replaceSel(txt.replace(/\s+$/,''));
 //                 break;
             case "Missing 'new' prefix when invoking a constructor.":
-                sm.insertText(errorpos,'new ');
+                if(lineIsChanged()){
+                    return;
+                }
+                if(sm.getTextRange(errorpos, errorpos+4) !== 'new '){
+                    sm.insertText(errorpos,'new ');
+                }
                 break;
 //             case "Expected a conditional expression and instead saw an assignment.":
 //                 break;
             case "Unnecessary semicolon.":
+                if(lineIsChanged()){
+                    return;
+                }
                 var ind=txt.search(/((?:;\s*)+)[\s\n\r]*$/);
                 var expected=result.a===';'?1:0;
                 if(ind>=0){
@@ -467,19 +499,25 @@ if(!window.extensions.KOJSLINT){
                 }
                 break;
             case "Missing '()' invoking a constructor.":
-                if(sm.getCharAt(errorpos)!=='('.charCodeAt(0)){
+                if(lineIsChanged()){
+                    return;
+                }
+                if(sm.getTextRange(errorpos, errorpos+2) !== '()'){
                     sm.insertText(errorpos,"()");
                 }
                 break;
             case "['{a}'] is better written in dot notation.":
-                if(txt.charAt(errorpos-startpos-1)==='['){
+                if(lineIsChanged()){
+                    return;
+                }
+                if(sm.getTextRange(errorpos, errorpos+1)==='['){
                     var startreplace=errorpos-1;
                     sm.gotoPos(startreplace);
                     sm.selectionStart = startreplace;
                     sm.selectionEnd = startreplace+4+result.a.length;
                     //ko.dialogs.alert(startreplace+" "+sm.selectionEnd);
-                    sm.deleteBack();
-                    sm.insertText(startreplace,"."+result.a);
+                    //sm.deleteBack();
+                    sm.replaceSel("."+result.a);
                 }
                 break;
             default:
