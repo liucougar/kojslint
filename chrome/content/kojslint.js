@@ -702,70 +702,92 @@ if(!window.extensions.KOJSLINT){
     }
     
     // put the current error in the output panel
-    function viewAppendError(theError) {
-        var theCharTreecell = document.createElement('treecell'), // treecell to contain the error character number
-            theEvidenceTreecell = document.createElement('treecell'), // treecell to contain the error evidence
-            theLineTreecell = document.createElement('treecell'), // treecell to contain the error line number
-            theReasonTreecell = document.createElement('treecell'), // treecell to contain the error reason
-            theTreeitem = document.createElement('treeitem'),
-            theTreerow = document.createElement('treerow'); // treerow to contain treecells
+    function viewAppendErrors(theErrors) {
+        var theTreeitem,
+            theCharTreecell, // treecell to contain the error character number
+            theEvidenceTreecell, // treecell to contain the error evidence
+            theLineTreecell, // treecell to contain the error line number
+            theReasonTreecell, // treecell to contain the error reason
+            theTreerow, // treerow to contain treecells
+            theError, i=0, treechildren = elErrorsTreechildren;
         
-        // line
-        if (theError.line) {
-            theLineTreecell.setAttribute('label', theError.line);
-            theLineTreecell.setAttribute('tooltip', 'true');
-            theLineTreecell.setAttribute('tooltiptext', theError.line);
-        }
-        else {
-            theLineTreecell.setAttribute('label', '-');
-        }
-        
-        // character
-        if (theError.character) {
-            theCharTreecell.setAttribute('label', theError.character);
-            theCharTreecell.setAttribute('tooltip', 'true');
-            theCharTreecell.setAttribute('tooltiptext', theError.character);
-        }
-        else {
-            theCharTreecell.setAttribute('label', '-');
-        }
-        
-        // reason
-        if (theError.reason) {
-            theReasonTreecell.setAttribute('label', theError.reason);
-            theReasonTreecell.setAttribute('tooltip', 'true');
-            theReasonTreecell.setAttribute('tooltiptext', theError.reason);
-        }
-        else {
-            theReasonTreecell.setAttribute('label', '-');
-        }
-        
-        // evidence
-        if (theError.evidence) {
-            theEvidenceTreecell.setAttribute('label', theError.evidence.replace(/^\s*/, "").replace(/\s*$/, ""));
-            theEvidenceTreecell.setAttribute('tooltip', 'true');
-            theEvidenceTreecell.setAttribute('tooltiptext', theError.evidence);
-        }
-        else {
-            theEvidenceTreecell.setAttribute('label', constCrockismsBad[Math.floor(Math.random() * 14)]);
-        }
-        
-        theTreerow.appendChild(theLineTreecell);
-        theTreerow.appendChild(theCharTreecell);
-        theTreerow.appendChild(theReasonTreecell);
-        theTreerow.appendChild(theEvidenceTreecell);
-        theTreeitem.setUserData('lintError', theError, null);
-        theTreeitem.appendChild(theTreerow);
         if (!elErrorsTreechildren) {
             elErrorsTreechildren = document.getElementById(constErrorsTreechildrenId);
         }
-        elErrorsTreechildren.appendChild(theTreeitem);
+
+        if(theErrors.length>1){
+            //add a header
+            theErrors.unshift({line:theErrors[0].line, reason:theErrors.length + "Errors are found on this line"});
+        }
+        while((theError = theErrors[i++])){
+            theTreeitem =  document.createElement('treeitem');
+            theTreerow = document.createElement('treerow');
+            theCharTreecell = document.createElement('treecell');
+            theEvidenceTreecell = document.createElement('treecell');
+            theLineTreecell = document.createElement('treecell');
+            theReasonTreecell = document.createElement('treecell');
+            // line
+            if (theError.line) {
+                theLineTreecell.setAttribute('label', theError.line);
+                theLineTreecell.setAttribute('tooltip', 'true');
+                theLineTreecell.setAttribute('tooltiptext', theError.line);
+            }
+            else {
+                theLineTreecell.setAttribute('label', '-');
+            }
+            
+            // character
+            if (theError.character) {
+                theCharTreecell.setAttribute('label', theError.character);
+                theCharTreecell.setAttribute('tooltip', 'true');
+                theCharTreecell.setAttribute('tooltiptext', theError.character);
+            }
+            else {
+                theCharTreecell.setAttribute('label', '-');
+            }
+            
+            // reason
+            if (theError.reason) {
+                theReasonTreecell.setAttribute('label', theError.reason);
+                theReasonTreecell.setAttribute('tooltip', 'true');
+                theReasonTreecell.setAttribute('tooltiptext', theError.reason);
+            }
+            else {
+                theReasonTreecell.setAttribute('label', '-');
+            }
+            
+            // evidence
+            if (theError.evidence) {
+                theEvidenceTreecell.setAttribute('label', theError.evidence.replace(/^\s*/, "").replace(/\s*$/, ""));
+                theEvidenceTreecell.setAttribute('tooltip', 'true');
+                theEvidenceTreecell.setAttribute('tooltiptext', theError.evidence);
+            }
+            else {
+                theEvidenceTreecell.setAttribute('label', constCrockismsBad[Math.floor(Math.random() * 14)]);
+            }
+            
+            theTreerow.appendChild(theLineTreecell);
+            theTreerow.appendChild(theCharTreecell);
+            theTreerow.appendChild(theReasonTreecell);
+            theTreerow.appendChild(theEvidenceTreecell);
+
+            theTreeitem.appendChild(theTreerow);
+            theTreeitem.setUserData('lintError', theError, null);
+            treechildren.appendChild(theTreeitem);
+            
+            if(i===1 && theErrors.length>1){
+                theTreeitem.setAttribute('container', true);
+                theTreeitem.setAttribute('open', true);
+                treechildren = theTreeitem.appendChild(document.createElement('treechildren'));
+            }
+        }
     }
 
     // display errors in the output errors panel
     function viewShowErrors(theErrors, numberOfErrors) {
         var i, // loop counter
-            theError; // the current error
+            theError, // the current error
+            lastError, group=[];
         
         // put number of errors in tab title, adding a + if there are more errors than can be returned
         if (theErrors[numberOfErrors - 1]) {
@@ -784,8 +806,20 @@ if(!window.extensions.KOJSLINT){
             
             // the check for existence prevents a bug
             if (theError) {
-                viewAppendError(theError);            
+                if (!lastError || lastError.line == theError.line){
+                    group.push(theError);
+                    lastError = theError;
+                }else{
+                    viewAppendErrors(group);
+                    group = [];
+                    lastError = null;
+                }
+                            
             }
+        }
+        
+        if(group.length){
+            viewAppendErrors(group);
         }
         
         // allow results to be clicked to jump to text
@@ -978,12 +1012,12 @@ if(!window.extensions.KOJSLINT){
         
         // if there are no errors, focus on the function report panel
         if (!myData.errors) {
-            viewAppendError({
+            viewAppendErrors([{
                 line : '-',
                 character : '-',
                 reason : 'No errors found',
                 evidence : constCrockisms[Math.floor(Math.random() * 14)]
-            });
+            }]);
             
             // focus on the errors tab within the output panel
             ko.uilayout.ensureTabShown(constErrorsTabId, true);

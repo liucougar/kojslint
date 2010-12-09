@@ -195,7 +195,7 @@
 		<tabpanel id="kojslint2_errors_tabpanel" orient="vertical" flex="1">
 			<tree enableColumnDrag="true" flex="1" id="kojslint2_errors_tree">
 				<treecols>
-					<treecol id="kojslint2_errors_tree_line" label="Line" persist="width ordinal hidden" />
+					<treecol id="kojslint2_errors_tree_line" label="Line" persist="width ordinal hidden" primary="true" />
 					<splitter class="tree-splitter" />  
 					<treecol id="kojslint2_errors_tree_char" label="Char" persist="width ordinal hidden" />
 					<splitter class="tree-splitter" />  
