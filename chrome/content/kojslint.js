@@ -349,6 +349,154 @@ if(!window.extensions.KOJSLINT){
         viewJumpToErrorLine();
     }
     
+    function eventErrorClick(e){
+        if(e && e.button == 2){ //right button
+            var view = elErrorsTree.view;
+            var selectedIndex = elErrorsTree.currentIndex, row = view.getItemAtIndex(selectedIndex);
+            var theError = row && row.getUserData('lintError');
+            if(theError){
+                autoFixError(ko.views.manager.currentView, theError);
+            }
+        }
+    }
+    function autoFixError(view, result){
+        if(!result.raw){
+            return;
+        }
+        var sm = view.scimoz;
+        var line = result.line - 1;
+        var txt=getLineText(view,line);
+        //ignore checking for "Bad line breaking before '{a}'.", it will be handled below
+        if(result.raw !== "Bad line breaking before '{a}'." && 
+            result.evidence !== txt.substr(0, result.evidence.length) && 
+            /\s/.test(txt.substr(result.evidence.length))){
+            alert('Stoped: Line is changed! ');
+            return;
+        }
+        var startpos = sm.positionAtColumn(line,0);
+        var errorpos = sm.positionAtColumn(line,result.character-1);
+        var endpos = sm.getLineEndPosition(line);
+//         alert(txt+' '+startpos+' '+errorpos+' '+endpos);
+        switch(result.raw){
+            case 'Missing semicolon.':
+                //ko.dialogs.alert(txt.slice(-2,-1)); 
+//                 if(txt && ! /;[\s\n\r]*$/.test(txt)){ //prevent double insert
+                    sm.insertText(errorpos,';');
+                    //this.moveCursorToMessage(view, result);
+//                 }
+                break;
+            case "Use '{a}' to compare with '{b}'.":
+                if(result.a){
+                    var op=result.a.substr(0,2),i=0;
+                    var compwith=result.b;
+                    if(!compwith){
+                        compwith="(?:\"\"|'')";
+                    }
+                    var reg=new RegExp(op+'\\s*'+compwith+'|'+compwith+'\\s*'+op,'g');
+                    var inspos;
+                    txt.replace(reg,function(s,offset,str){
+                        if(!inspos){
+                            if(s.substr(0,2)===op){
+                                if(str.charAt(offset-1)!=='=' && str.charAt(offset-1)!=='!'){
+                                    inspos=offset+1;
+                                }
+                            }else{
+                                if(str.charAt(offset+s.length)!=='='){
+                                    inspos=offset+s.length;
+                                }
+                            }
+                        }
+                        return s;
+                    });
+                    if(inspos){
+                        sm.insertText(startpos+inspos,'=');
+                        //this.moveCursorToMessage(view, result);
+                    }
+                }
+                break;
+            case "Bad line breaking before '{a}'.":
+                var c = String.fromCharCode(sm.getCharAt(endpos-1));
+                if(c === result.a){
+                    alert('already fixed');
+                    return;
+                }
+                sm.insertText(endpos, result.a);
+                
+                //remove the starting character in the next line
+                var indentpos = sm.getLineIndentPosition(line+1);
+                if(String.fromCharCode(sm.getCharAt(indentpos)) == result.a){
+                    deleteRange(sm, indentpos,1);
+                }
+                break;
+            case "Expected '{a}' and instead saw '{b}'.":
+                sm.gotoPos(errorpos);
+                sm.selectionStart = errorpos;
+                sm.selectionEnd = errorpos + result.b.length;
+                sm.replaceSel(result.a);
+                break;
+//             case "Mixed spaces and tabs.":
+//                 var w=globalPrefsSet.getLongPref('indentWidth');//, useTab=globalPrefsSet.getBooleanPref('useTab');
+//                 if(sm.useTab){
+//                     var reg = new RegExp('\\s{'+w+'}', 'g');
+//                     txt = txt.replace(reg, '\t');
+//                 }else{
+//                     var empty='';
+//                     while(w--){
+//                         empty += ' ';
+//                     }
+//                     txt = txt.replace(/\t/g, empty);
+//                 }
+//                 sm.gotoPos(startpos);
+//                 sm.selectionStart = startpos;
+//                 sm.selectionEnd = endpos;
+//                 sm.replaceSel(txt.replace(/\s+$/,''));
+//                 break;
+            case "Missing 'new' prefix when invoking a constructor.":
+                sm.insertText(errorpos,'new ');
+                break;
+//             case "Expected a conditional expression and instead saw an assignment.":
+//                 break;
+            case "Unnecessary semicolon.":
+                var ind=txt.search(/((?:;\s*)+)[\s\n\r]*$/);
+                var expected=result.a===';'?1:0;
+                if(ind>=0){
+                    var startreplace=startpos+ind+expected;
+                    if(startreplace!==endpos){
+                        deleteRange(sm, startreplace,endpos-startreplace);
+                    }
+                }
+                break;
+            case "Missing '()' invoking a constructor.":
+                if(sm.getCharAt(errorpos)!=='('.charCodeAt(0)){
+                    sm.insertText(errorpos,"()");
+                }
+                break;
+            case "['{a}'] is better written in dot notation.":
+                if(txt.charAt(errorpos-startpos-1)==='['){
+                    var startreplace=errorpos-1;
+                    sm.gotoPos(startreplace);
+                    sm.selectionStart = startreplace;
+                    sm.selectionEnd = startreplace+4+result.a.length;
+                    //ko.dialogs.alert(startreplace+" "+sm.selectionEnd);
+                    sm.deleteBack();
+                    sm.insertText(startreplace,"."+result.a);
+                }
+                break;
+            default:
+                alert("Don't know how to auto fix error "+JSON.encode(result));
+        }
+    }
+    function getLineText(view,line){
+        var resultObj={};
+        view.scimoz.getLine(line,resultObj);
+        return resultObj.value;
+    }
+    function deleteRange(sm, startreplace, len){
+        sm.gotoPos(startreplace);
+        sm.selectionStart = startreplace;
+        sm.selectionEnd = startreplace+len;
+        sm.deleteBack();
+    }
     // jump to the location of the error that has been selected
     function eventErrorKeyup(e) {
         viewJumpToErrorLine(e.keyCode);
@@ -606,6 +754,7 @@ if(!window.extensions.KOJSLINT){
         theTreerow.appendChild(theCharTreecell);
         theTreerow.appendChild(theReasonTreecell);
         theTreerow.appendChild(theEvidenceTreecell);
+        theTreeitem.setUserData('lintError', theError, null);
         theTreeitem.appendChild(theTreerow);
         if (!elErrorsTreechildren) {
             elErrorsTreechildren = document.getElementById(constErrorsTreechildrenId);
@@ -641,6 +790,7 @@ if(!window.extensions.KOJSLINT){
         
         // allow results to be clicked to jump to text
         elErrorsTreechildren.addEventListener('dblclick', eventErrorDblClick, false);
+        elErrorsTreechildren.addEventListener('click', eventErrorClick, false);
         
         // keyboard events need to be on the tree rather than the treechildren element
         if (!elErrorsTree) {
