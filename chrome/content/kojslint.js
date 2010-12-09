@@ -676,6 +676,21 @@ if(!window.extensions.KOJSLINT){
         fileSavedobserver = new FileSavedObserver();
         window.addEventListener('view_closing', eventTabClosing, false);
         window.addEventListener('unload', eventUnload, false);
+        
+        //setup error output grid event handler
+        // allow results to be clicked to jump to text
+        elErrorsTreechildren.addEventListener('dblclick', eventErrorDblClick, false);
+        elErrorsTreechildren.addEventListener('click', eventErrorClick, false);
+        
+        // keyboard events need to be on the tree rather than the treechildren element
+        elErrorsTree.addEventListener('keyup', eventErrorKeyup, false);
+        
+        //setup report output grid event handler
+        // allow results to be clicked to jump to text
+        elFunctionsTreechildren.addEventListener('dblclick', eventFunctionDblClick, false);
+        
+        // keyboard events need to be on the tree rather than the treechildren element
+        elFunctionsTree.addEventListener('keyup', eventFunctionKeyup, false);
     }
     
     function init() {
@@ -815,18 +830,6 @@ if(!window.extensions.KOJSLINT){
         if(group.length){
             viewAppendErrors(group);
         }
-        
-        // allow results to be clicked to jump to text
-        elErrorsTreechildren.addEventListener('dblclick', eventErrorDblClick, false);
-        elErrorsTreechildren.addEventListener('click', eventErrorClick, false);
-        
-        // keyboard events need to be on the tree rather than the treechildren element
-        if (!elErrorsTree) {
-            elErrorsTree = document.getElementById(constErrorsTreeId);
-        }
-        elErrorsTree.addEventListener('keyup', eventErrorKeyup, false);
-        
-        // NICE to update the Tab text to show the number of errors,in similar fashion to Find results
     }
     
     // put the current error in the output panel
@@ -983,17 +986,6 @@ if(!window.extensions.KOJSLINT){
                 viewAppendFunction(theFunction);            
             }
         }
-        
-        // allow results to be clicked to jump to text
-        elFunctionsTreechildren.addEventListener('dblclick', eventFunctionDblClick, false);
-        
-        // keyboard events need to be on the tree rather than the treechildren element
-        if (!elFunctionsTree) {
-            elFunctionsTree = document.getElementById(constFunctionsTreeId);
-        }
-        elFunctionsTree.addEventListener('keyup', eventFunctionKeyup, false);
-        
-        // NICE to update the Tab text to show the number of errors,in similar fashion to Find results
     }
     
     // display JSLint reports
