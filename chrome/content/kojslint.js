@@ -692,13 +692,9 @@ if(!window.extensions.KOJSLINT){
         if (!theChildren) {
             theChildren = document.getElementById(theId);
         }
-        theItems = theChildren.getElementsByTagName('treeitem');
-        length = theItems.length;               
-        
-        // this loop needs to be iterated backwards
-        for (i = length - 1; i > - 1; i -= 1) {
-            theChildren.removeChild(theItems[i]);
-        }      
+        while(theChildren.firstChild){
+            theChildren.removeChild(theChildren.firstChild);
+        }
     }
     
     // put the current error in the output panel
@@ -711,9 +707,9 @@ if(!window.extensions.KOJSLINT){
             theTreerow, // treerow to contain treecells
             theError, i=0, treechildren = elErrorsTreechildren;
         
-        if (!elErrorsTreechildren) {
-            elErrorsTreechildren = document.getElementById(constErrorsTreechildrenId);
-        }
+//         if (!elErrorsTreechildren) {
+//             elErrorsTreechildren = document.getElementById(constErrorsTreechildrenId);
+//         }
 
         if(theErrors.length>1){
             //add a header
@@ -806,15 +802,13 @@ if(!window.extensions.KOJSLINT){
             
             // the check for existence prevents a bug
             if (theError) {
-                if (!lastError || lastError.line == theError.line){
-                    group.push(theError);
-                    lastError = theError;
-                }else{
+                if (lastError && lastError.line !== theError.line){
                     viewAppendErrors(group);
                     group = [];
                     lastError = null;
                 }
-                            
+                group.push(theError);
+                lastError = theError;           
             }
         }
         
@@ -1031,7 +1025,6 @@ if(!window.extensions.KOJSLINT){
             ko.uilayout.ensureTabShown(constFunctionsTabId, true);
         }
         else {
-            
             // display errors
             viewShowErrors(myData.errors, myData.errors.length);
             
