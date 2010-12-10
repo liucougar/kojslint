@@ -391,6 +391,23 @@ if(!window.extensions.KOJSLINT){
             }
             return false;
         }
+        
+        function removeErrorItem(){
+            if(result.nodeId){
+                var node = document.getElementById(result.nodeId), parent;
+                if(node){
+                    parent = node.parentNode;
+                    parent.removeChild(node);
+                    //remove the treechildren element if it's empty
+                    if(!parent.hasAttribute('id') && !parent.childNodes.length){
+                        //also removes the folder of this group
+                        node = parent.parentNode;
+                        parent.parentNode.removeChild(parent);
+                        node.parentNode.removeChild(node);
+                    }
+                }
+            }
+        }
 //         alert(txt+' '+startpos+' '+errorpos+' '+endpos);
         switch(result.raw){
             case 'Missing semicolon.':
@@ -453,21 +470,23 @@ if(!window.extensions.KOJSLINT){
                 if(lineIsChanged()){
                     return;
                 }
-                sm.gotoPos(errorpos);
-                sm.selectionStart = errorpos;
-                sm.selectionEnd = errorpos + result.b.length;
-                sm.replaceSel(result.a);
+                if(sm.getTextRange(errorpos, errorpos+result.a.length) !== result.a){
+                    sm.gotoPos(errorpos);
+                    sm.selectionStart = errorpos;
+                    sm.selectionEnd = errorpos + result.b.length;
+                    sm.replaceSel(result.a);
+                }
                 break;
             case "Mixed spaces and tabs.":
                 var useTab=view.document.useTabs;
                 sm.gotoPos(startpos);
                 sm.selectionStart = startpos;
                 sm.selectionEnd = endpos;
-				//need focus to run command
-				view.setFocus();
-				ko.commands.doCommand(useTab?'cmd_tabify':'cmd_untabify');
-				//move cursor to the begining of the line
-				sm.gotoPos(sm.getLineIndentPosition(line));
+                //need focus to run command
+                view.setFocus();
+                ko.commands.doCommand(useTab?'cmd_tabify':'cmd_untabify');
+                //move cursor to the begining of the line
+                sm.gotoPos(sm.getLineIndentPosition(line));
                 break;
             case "Missing 'new' prefix when invoking a constructor.":
                 if(lineIsChanged()){
@@ -480,7 +499,7 @@ if(!window.extensions.KOJSLINT){
 //             case "Expected a conditional expression and instead saw an assignment.":
 //                 break;
             case "Unnecessary semicolon.":
-                if(lineIsChanged()){
+                if(lineIsChanged(true)){
                     return;
                 }
                 var ind=txt.search(/((?:;\s*)+)[\s\n\r]*$/);
@@ -514,15 +533,17 @@ if(!window.extensions.KOJSLINT){
                     sm.replaceSel("."+result.a);
                 }
                 break;
-			case "Missing radix parameter.":
-				var reg = /parseInt\([^,\)]+\)/g, m;
-				while((m = reg.exec(txt))){
-					sm.insertText(startpos + reg.lastIndex - 1, ', 10');
-				}
-				break;
+            case "Missing radix parameter.":
+                var reg = /parseInt\([^,\)]+\)/g, m;
+                while((m = reg.exec(txt))){
+                    sm.insertText(startpos + reg.lastIndex - 1, ', 10');
+                }
+                break;
             default:
                 alert("Don't know how to auto fix error "+JSON.encode(result));
+                return;
         }
+        removeErrorItem();
     }
     function getLineText(view,line){
         var resultObj={};
@@ -822,6 +843,9 @@ if(!window.extensions.KOJSLINT){
 
             theTreeitem.appendChild(theTreerow);
             theTreeitem.setUserData('lintError', theError, null);
+            if(theError.nodeId){
+                theTreeitem.setAttribute('id', theError.nodeId);
+            }
             treechildren.appendChild(theTreeitem);
             
             if(i===1 && theErrors.length>1){
@@ -855,6 +879,7 @@ if(!window.extensions.KOJSLINT){
             
             // the check for existence prevents a bug
             if (theError) {
+                theError.nodeId = 'kojslint_error_item_'+i;
                 if (lastError && lastError.line !== theError.line){
                     viewAppendErrors(group);
                     group = [];
