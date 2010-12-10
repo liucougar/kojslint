@@ -523,7 +523,7 @@ if(!window.extensions.KOJSLINT){
                 if(lineIsChanged()){
                     return;
                 }
-                if(sm.getTextRange(errorpos, errorpos+1)==='['){
+                if(sm.getTextRange(errorpos-1, errorpos)==='['){
                     var startreplace=errorpos-1;
                     sm.gotoPos(startreplace);
                     sm.selectionStart = startreplace;
@@ -787,7 +787,7 @@ if(!window.extensions.KOJSLINT){
 
         if(theErrors.length>1){
             //add a header
-            theErrors.unshift({line:theErrors[0].line, reason:theErrors.length + "Errors are found on this line"});
+            theErrors.unshift({line:theErrors[0].line, reason:theErrors.length + " Errors are found on this line"});
         }
         while((theError = theErrors[i++])){
             theTreeitem =  document.createElement('treeitem');
@@ -1121,7 +1121,9 @@ if(!window.extensions.KOJSLINT){
         var myResult;
         
         window.setCursor('wait');
-        myResult = JSLINT(ko.views.manager.currentView.document.buffer, prefsObject[currentConfName]);
+        // copyObject below is to prevent JSLINT from modifying the options object (it will set new options 
+        // on this object when it encounters inline options)
+        myResult = JSLINT(ko.views.manager.currentView.document.buffer, copyObject(prefsObject[currentConfName]));
         viewShow(JSLINT.data());
         window.setCursor('default');  
     }
