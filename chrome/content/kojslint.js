@@ -93,15 +93,6 @@ if(!window.extensions.KOJSLINT){
         return o;
     }
     
-    // 'subclass' an object
-    function copyObject(o) {
-        
-        function F() {}
-        F.prototype = o;
-        
-        return new F();
-    }
-    
     // set the options panel to reflect default mode
     function enterCustomMode() {
         var i, // counter
@@ -299,11 +290,9 @@ if(!window.extensions.KOJSLINT){
         if (!prefsObject[currentConfName]) {
             prefsObject[currentConfName] = {};
             
-            // make a deep copy of the options object and assign it
-            tempObj = copyObject(options);
-            for (property in tempObj) {
+            for (property in options) {
                 if (options.hasOwnProperty(property)) {
-                    prefsObject[currentConfName][property] = tempObj[property];
+                    prefsObject[currentConfName][property] = options[property];
                 }
             }
         }
@@ -1123,7 +1112,7 @@ if(!window.extensions.KOJSLINT){
         window.setCursor('wait');
         // copyObject below is to prevent JSLINT from modifying the options object (it will set new options 
         // on this object when it encounters inline options)
-        myResult = JSLINT(ko.views.manager.currentView.document.buffer, copyObject(prefsObject[currentConfName]));
+        myResult = JSLINT(ko.views.manager.currentView.document.buffer, Object.create(prefsObject[currentConfName]));
         viewShow(JSLINT.data());
         window.setCursor('default');  
     }
