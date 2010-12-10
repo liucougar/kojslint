@@ -1110,7 +1110,7 @@ if(!window.extensions.KOJSLINT){
         var myResult;
         
         window.setCursor('wait');
-        // copyObject below is to prevent JSLINT from modifying the options object (it will set new options 
+        // Object.create below is to prevent JSLINT from modifying the options object (it will set new options 
         // on this object when it encounters inline options)
         myResult = JSLINT(ko.views.manager.currentView.document.buffer, Object.create(prefsObject[currentConfName]));
         viewShow(JSLINT.data());
