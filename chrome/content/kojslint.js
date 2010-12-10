@@ -514,6 +514,12 @@ if(!window.extensions.KOJSLINT){
                     sm.replaceSel("."+result.a);
                 }
                 break;
+			case "Missing radix parameter.":
+				var reg = /parseInt\([^,\)]+\)/g, m;
+				while((m = reg.exec(txt))){
+					sm.insertText(startpos + reg.lastIndex - 1, ', 10');
+				}
+				break;
             default:
                 alert("Don't know how to auto fix error "+JSON.encode(result));
         }
