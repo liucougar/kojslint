@@ -528,6 +528,11 @@ if(!window.extensions.KOJSLINT){
                     sm.insertText(startpos + reg.lastIndex - 1, ', 10');
                 }
                 break;
+			case "Extra comma.":
+				if(sm.getTextRange(errorpos, errorpos+1)===','){
+					deleteRange(sm, errorpos, 1);
+				}
+				break;
             default:
                 alert("Don't know how to auto fix error "+JSON.encode(result));
                 return;
