@@ -458,23 +458,17 @@ if(!window.extensions.KOJSLINT){
                 sm.selectionEnd = errorpos + result.b.length;
                 sm.replaceSel(result.a);
                 break;
-//             case "Mixed spaces and tabs.":
-//                 var w=globalPrefsSet.getLongPref('indentWidth');//, useTab=globalPrefsSet.getBooleanPref('useTab');
-//                 if(sm.useTab){
-//                     var reg = new RegExp('\\s{'+w+'}', 'g');
-//                     txt = txt.replace(reg, '\t');
-//                 }else{
-//                     var empty='';
-//                     while(w--){
-//                         empty += ' ';
-//                     }
-//                     txt = txt.replace(/\t/g, empty);
-//                 }
-//                 sm.gotoPos(startpos);
-//                 sm.selectionStart = startpos;
-//                 sm.selectionEnd = endpos;
-//                 sm.replaceSel(txt.replace(/\s+$/,''));
-//                 break;
+            case "Mixed spaces and tabs.":
+                var useTab=view.document.useTabs;
+                sm.gotoPos(startpos);
+                sm.selectionStart = startpos;
+                sm.selectionEnd = endpos;
+				//need focus to run command
+				view.setFocus();
+				ko.commands.doCommand(useTab?'cmd_tabify':'cmd_untabify');
+				//move cursor to the begining of the line
+				sm.gotoPos(sm.getLineIndentPosition(line));
+                break;
             case "Missing 'new' prefix when invoking a constructor.":
                 if(lineIsChanged()){
                     return;
