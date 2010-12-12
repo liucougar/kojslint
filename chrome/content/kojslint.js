@@ -65,6 +65,17 @@ if(!window.extensions.KOJSLINT){
         JSLINT = window.extensions.JSLINT,
         KOJSLINT = window.extensions.KOJSLINT;
 
+    function copyMode(o){
+        var newoptionobj = KOJSLINT.mixin({}, o);
+        if(newoptionobj.predef){
+            if(newoptionobj.predef.slice){
+                newoptionobj.predef = newoptionobj.predef.slice(0);
+            }else if(!newoptionobj.predef.substr){ //not a string, should be an object
+                newoptionobj.predef = KOJSLINT.mixin({}, o.predef);
+            }
+        }
+        return newoptionobj;
+    }
     function resetDefaultModes(o){
         for(var i in o){
             if(o.hasOwnProperty(i)){
@@ -93,11 +104,11 @@ if(!window.extensions.KOJSLINT){
             undef : true, // if variables should be declared before used
             white : true // if strict whitespace rules apply
         };
-        o.options['custom'] = KOJSLINT.mixin({}, o.options['default']);
+        o.options['custom'] = copyMode(o.options['default']);
     }
     // allow old preference objects to work with the latest version of JS Lint    
     function updatePref(o) {
-        resetDefaultModes(o);
+        //resetDefaultModes(o);
         if(o.version!==CURRENT_PREF_VER){
             resetDefaultModes(o);
             globalPrefsSet.setStringPref(prefsName, JSON.encode(o));
@@ -717,6 +728,12 @@ if(!window.extensions.KOJSLINT){
         modeLockedCheckbox = document.getElementById('kojslint_mode_locked');
         modeLockedCheckbox.addEventListener('click', toggleLocked, false);
         
+        var mode_add_button = document.getElementById('kojslint_mode_add');
+        mode_add_button.addEventListener('command', addMode, false);
+        
+        var mode_delete_button = document.getElementById('kojslint_mode_delete');
+        mode_delete_button.addEventListener('command', deleteMode, false);
+        
         updateOptionsPanel();
     }
     
@@ -729,7 +746,6 @@ if(!window.extensions.KOJSLINT){
         }
     }
     function populateModePopup(){
-        modeMenuNotDirty = true;
         var popup = mode_menulist_popup, i=0, mode, menuitem, foundCurrent;
         while(popup.firstChild){
             popup.removeChild(popup.firstChild);
@@ -747,6 +763,45 @@ if(!window.extensions.KOJSLINT){
         }
         if(foundCurrent){
             mode_menulist.value = foundCurrent;
+        }
+    }
+    
+    function addMode(){
+        var name = prompt('Please give the new mode a name:');
+        if(name){
+            var modeobj = findModeObject(currentConfName);
+            if(modeobj){
+                var id = String(+new Date());
+                prefsObject.options[id] = copyMode(prefsObject.options[modeobj.id]);
+                var newmodeobj = KOJSLINT.mixin({}, modeobj);
+                newmodeobj.label = name;
+                newmodeobj.id = id;
+                delete newmodeobj.locked; //newly created mode should not be locked
+                prefsObject.modes.push(newmodeobj);
+                populateModePopup();
+                mode_menulist.selectedIndex = prefsObject.modes.length - 1;
+            }
+        }
+    }
+    function deleteMode(){
+        if(prefsObject.modes.length==1){
+            alert('Can not delete the last mode');
+            return;
+        }
+        var modeobj = findModeObject(currentConfName);
+        if(modeobj){
+            if(modeobj.locked){
+                alert('Can not delete a locked mode');
+                return;
+            }
+            if(!confirm('Do you really want to delete this mode (once deleted, there is no way to get it back)?')){
+                return;
+            }
+            var index = mode_menulist.selectedIndex;
+            prefsObject.modes.splice(index, 1);
+            delete prefsObject.options[currentConfName];
+            populateModePopup();
+            mode_menulist.selectedIndex = 0;
         }
     }
     function init() {

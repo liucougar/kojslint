@@ -27,6 +27,12 @@
 						<menulist id="kojslint_mode_menulist">
 							<menupopup id="kojslint_mode_popup"></menupopup>
 						</menulist>
+						<button class="list-item-add-icon button-toolbar-a"
+							id="kojslint_mode_add"
+							tooltiptext="Add" />
+						<button class="list-item-remove-icon button-toolbar-a"
+							id="kojslint_mode_delete"
+							tooltiptext="Delete" />
 					</hbox>
 					<hbox>
 						<caption id="kojslint2_h4_custom" label="Options" />
