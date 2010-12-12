@@ -215,10 +215,10 @@ if (!window.extensions.KOJSLINT) {
 
     function toggleLocked(e) {
         var checkbox = e.target;
-        if(checkbox === modeLockedCheckbox){
+        if (checkbox === modeLockedCheckbox) {
             var modeObj = findModeObject(currentConfName);
 
-            if((Boolean(modeObj && modeObj.locked)) !== checkbox.checked){
+            if ((Boolean(modeObj && modeObj.locked)) !== checkbox.checked) {
                 modeObj.locked = !modeObj.locked;
                 updateOptionsPanel();
             }
@@ -320,43 +320,43 @@ if (!window.extensions.KOJSLINT) {
         viewJumpToErrorLine();
     }
     
-    function eventErrorClick(e){
-        if(e && e.button === 2){ //right button
+    function eventErrorClick(e) {
+        if (e && e.button === 2) { //right button
             var view = elErrorsTree.view;
             var selectedIndex = elErrorsTree.currentIndex, row = view.getItemAtIndex(selectedIndex);
             var theError = row && row.getUserData('lintError');
-            if(theError){
+            if (theError) {
                 autoFixError(ko.views.manager.currentView, theError);
             }
         }
     }
-    function autoFixError(view, result){
-        if(!result.raw){
+    function autoFixError(view, result) {
+        if (!result.raw) {
             return;
         }
         var sm = view.scimoz;
         var line = result.line - 1;
-        var txt=getLineText(view,line);
-        var startpos = sm.positionAtColumn(line,0);
-        var errorpos = sm.positionAtColumn(line,result.character-1);
+        var txt = getLineText(view, line);
+        var startpos = sm.positionAtColumn(line, 0);
+        var errorpos = sm.positionAtColumn(line, result.character - 1);
         var endpos = sm.getLineEndPosition(line);
         
-        function lineIsChanged(full){
+        function lineIsChanged(full) {
             var len, error;
-            if(full){
+            if (full) {
                 len = result.evidence.length;
-                if(!/^\s*$/.test(txt.substr(len))){
+                if (!/^\s*$/.test(txt.substr(len))) {
                     error = 1;
                 }
-            }else{
+            } else {
                 len = errorpos - startpos;
             }
-            if(!error){
-                if(result.evidence.substr(0, len) !== txt.substr(0, len)){
+            if (!error) {
+                if (result.evidence.substr(0, len) !== txt.substr(0, len)) {
                     error = 2;
                 }
             }
-            if(error){
+            if (error) {
                 alert('Stoped: Line is changed! ');
                 return true;
             }
@@ -364,7 +364,7 @@ if (!window.extensions.KOJSLINT) {
         }
         
         function removeErrorItem(){
-            if(result.nodeId){
+            if (result.nodeId){
                 var node = document.getElementById(result.nodeId), parent;
                 if(node){
                     parent = node.parentNode;
@@ -508,6 +508,19 @@ if (!window.extensions.KOJSLINT) {
             case "Extra comma.":
                 if(sm.getTextRange(errorpos, errorpos+1)===','){
                     deleteRange(sm, errorpos, 1);
+                }
+                break;
+            case "Missing space after '{a}'.":
+                var count = 0;
+                while(count < 3 && sm.getTextRange(errorpos - result.a.length, errorpos) !== result.a){
+                    errorpos -= 1;
+                    count += 1;
+                }
+                if (sm.getTextRange(errorpos - result.a.length, errorpos) === result.a) {
+                    sm.insertText(errorpos, ' ');
+                } else {
+                    alert("The line is changed, can't auto fix");
+                    return;
                 }
                 break;
             default:
