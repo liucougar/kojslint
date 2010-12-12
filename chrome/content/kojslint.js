@@ -842,7 +842,7 @@ if (!window.extensions.KOJSLINT) {
                 alert('Can not delete a locked mode');
                 return;
             }
-            if (!confirm('Do you really want to delete this mode (once deleted, there is no way to get it back)?')) {
+            if (!confirm('Do you really want to delete mode "'+ modeobj.label +'" (once deleted, there is no way to get it back)?')) {
                 return;
             }
             var index = mode_menulist.selectedIndex;
