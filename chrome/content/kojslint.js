@@ -6,10 +6,10 @@ if (typeof(window.extensions) === 'undefined') {
     window.extensions = {};
 }
 
-if(!window.extensions.KOJSLINT){
-    window.extensions.KOJSLINT = {mixin: function(o, p){
-        for(var i in p){
-            if(p.hasOwnProperty(i)){
+if (!window.extensions.KOJSLINT) {
+    window.extensions.KOJSLINT = {mixin: function (o, p) {
+        for (var i in p) {
+            if (p.hasOwnProperty(i)) {
                 o[i] = p[i];
             }
         }
@@ -23,7 +23,7 @@ if(!window.extensions.KOJSLINT){
         constCustomOptionsContainerId = 'kojslint2_groupbox_custom_options', // ID of the custom options container
         //constModeHeadingCustom = 'Custom options', // Heading to display above options in custom mode
         //constModeHeadingDefault = 'Default mode', // Heading to display above options in default mode
-        CURRENT_PREF_VER=1,
+        CURRENT_PREF_VER = 1,
         constIndentationInputId = 'kojslint2_textbox_indent',
         constOptionsTabId = 'kojslint2_options_tab', // ID of the options tab
         constOptionsTabPanelId = 'kojslint2_options_panel', // ID of the options panel
@@ -118,13 +118,14 @@ if(!window.extensions.KOJSLINT){
     
     function findModeObject(id){
         var i=0, m;
-        for(;m=prefsObject.modes[i];i++){
+        for(;(m = prefsObject.modes[i]);i += 1){
             if(m.id === id){
                 return m;
             }
         }
     }
     
+    var mode_menulist, mode_menulist_popup, modeLockedCheckbox;
     // set the options panel to reflect default mode
     function enterNewMode() {
         var i, // counter
@@ -204,18 +205,16 @@ if(!window.extensions.KOJSLINT){
     }
 
     function toggleLocked(e){
-        try{
         var checkbox = e.target;
         if(checkbox === modeLockedCheckbox){
             var modeObj = findModeObject(currentConfName);
 
-            if(!!(modeObj && modeObj.locked) !== checkbox.checked){
+            if((Boolean(modeObj && modeObj.locked)) !== checkbox.checked){
                 modeObj.locked = !modeObj.locked;
                 updateOptionsPanel();
             }
             return;
         }
-        }catch(e){alert(JSON.encode(e))}
     }
     // when the max err input is changed
     function eventMaxErrChanged() {
@@ -313,7 +312,7 @@ if(!window.extensions.KOJSLINT){
     }
     
     function eventErrorClick(e){
-        if(e && e.button == 2){ //right button
+        if(e && e.button === 2){ //right button
             var view = elErrorsTree.view;
             var selectedIndex = elErrorsTree.currentIndex, row = view.getItemAtIndex(selectedIndex);
             var theError = row && row.getUserData('lintError');
@@ -425,7 +424,7 @@ if(!window.extensions.KOJSLINT){
                 
                 //remove the starting character in the next line
                 var indentpos = sm.getLineIndentPosition(line+1);
-                if(String.fromCharCode(sm.getCharAt(indentpos)) == result.a){
+                if(String.fromCharCode(sm.getCharAt(indentpos)) === result.a){
                     deleteRange(sm, indentpos,1);
                 }
                 break;
@@ -465,13 +464,8 @@ if(!window.extensions.KOJSLINT){
                 if(lineIsChanged(true)){
                     return;
                 }
-                var ind=txt.search(/((?:;\s*)+)[\s\n\r]*$/);
-                var expected=result.a===';'?1:0;
-                if(ind>=0){
-                    var startreplace=startpos+ind+expected;
-                    if(startreplace!==endpos){
-                        deleteRange(sm, startreplace,endpos-startreplace);
-                    }
+                if(sm.getTextRange(errorpos, errorpos+1) === ';'){
+                    deleteRange(sm, errorpos, 1);
                 }
                 break;
             case "Missing '()' invoking a constructor.":
@@ -487,7 +481,7 @@ if(!window.extensions.KOJSLINT){
                     return;
                 }
                 if(sm.getTextRange(errorpos-1, errorpos)==='['){
-                    var startreplace=errorpos-1;
+                    startreplace=errorpos-1;
                     sm.gotoPos(startreplace);
                     sm.selectionStart = startreplace;
                     sm.selectionEnd = startreplace+4+result.a.length;
@@ -513,9 +507,9 @@ if(!window.extensions.KOJSLINT){
         }
         removeErrorItem();
     }
-    function getLineText(view,line){
-        var resultObj={};
-        view.scimoz.getLine(line,resultObj);
+    function getLineText(view, line) {
+        var resultObj = {};
+        view.scimoz.getLine(line, resultObj);
         return resultObj.value;
     }
     function deleteRange(sm, startreplace, len){
@@ -594,32 +588,6 @@ if(!window.extensions.KOJSLINT){
         globalPrefsSet.setStringPref(prefsName, JSON.encode(prefsObject));
     }
     
-    // when a tab is closed, if its options are all default, we don't want to save its preferences to file
-    function removeUnchangedPrefs() {
-        return;
-        var keep = false, // set to false if we want to remove the preference
-            property;
-
-        for (property in prefsObject.options[currentConfName]) {
-            if (prefsObject.options[currentConfName][property] !== options[property]) {
-                if (property === 'predef') {
-                    
-                    // I'm sure there is a better way to do this
-                    if (!prefsObject.options[currentConfName][property] || (JSON.encode(prefsObject.options[currentConfName][property]) === '[""]')) {
-                        
-                        continue;
-                    }
-                }
-                keep = true;
-                
-                break;
-            }
-        }
-        if (!keep) {
-            delete prefsObject.options[currentConfName];
-        }
-    }
-    
     // if I create a new file and save it without changing tabs, a prefs object isn't created for it
     function createObjIfRequired() {
         var i, // counter
@@ -649,7 +617,7 @@ if(!window.extensions.KOJSLINT){
     
     // tab is being closed
     function eventTabClosing() {
-        removeUnchangedPrefs();
+        //removeUnchangedPrefs();
     }
     
     // 'class' used to create observer of file saved event - it appears addEventListener will not work for this
@@ -737,7 +705,6 @@ if(!window.extensions.KOJSLINT){
         updateOptionsPanel();
     }
     
-    var mode_menulist, mode_menulist_popup, modeLockedCheckbox;
     function eventModeChange(){
         if(mode_menulist.value !== currentConfName){
             currentConfName = mode_menulist.value;
@@ -784,7 +751,7 @@ if(!window.extensions.KOJSLINT){
         }
     }
     function deleteMode(){
-        if(prefsObject.modes.length==1){
+        if(prefsObject.modes.length===1){
             alert('Can not delete the last mode');
             return;
         }
@@ -809,7 +776,7 @@ if(!window.extensions.KOJSLINT){
         prefsObject = prefsGetPrefsObject();
         currentConfName = prefsObject.currentMode;
         observeWindowEvents();
-        }catch(e){alert(JSON.encode(e))}
+        }catch(e){alert(JSON.encode(e));}
     }
     
     // remove items from output panel
@@ -1001,11 +968,11 @@ if(!window.extensions.KOJSLINT){
         }
         
         // variables
-        if (!theFunction.var) {
+        if (!theFunction['var']) {
             theVarsTreecell.setAttribute('label', '-');
         }
         else {
-            theString = theFunction.var.join(', ');
+            theString = theFunction['var'].join(', ');
             theVarsTreecell.setAttribute('label', theString);
             theVarsTreecell.setAttribute('tooltip', 'true');
             theVarsTreecell.setAttribute('tooltiptext', theString);
@@ -1149,7 +1116,7 @@ if(!window.extensions.KOJSLINT){
                 last : '-',
                 param : ['-'],
                 closure : ['-'],
-                var : ['-'],
+                'var' : ['-'],
                 exception : ['-'],
                 outer : ['-'],
                 unused : ['-'],
@@ -1179,7 +1146,7 @@ if(!window.extensions.KOJSLINT){
         // on this object when it encounters inline options)
         viewShow(expose());
         window.setCursor('default');
-        }catch(e){alert(JSON.encode(e))}
+        }catch(e){alert(JSON.encode(e));}
     }
     
     // provide keyboard access to the errors results
@@ -1212,7 +1179,7 @@ if(!window.extensions.KOJSLINT){
     }
     
     function expose() {
-        var myResult = JSLINT(ko.views.manager.currentView.document.buffer, Object.create(prefsObject.options[currentConfName]));;
+        var myResult = JSLINT(ko.views.manager.currentView.document.buffer, Object.create(prefsObject.options[currentConfName]));
             
         return JSLINT.data();
     }
