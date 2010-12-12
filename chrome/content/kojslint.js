@@ -65,25 +65,33 @@ if (!window.extensions.KOJSLINT) {
         JSLINT = window.extensions.JSLINT,
         KOJSLINT = window.extensions.KOJSLINT;
 
-    function copyMode(o){
+    function copyMode(o) {
         var newoptionobj = KOJSLINT.mixin({}, o);
-        if(newoptionobj.predef){
-            if(newoptionobj.predef.slice){
+        if (newoptionobj.predef) {
+            if (newoptionobj.predef.slice) {
                 newoptionobj.predef = newoptionobj.predef.slice(0);
-            }else if(!newoptionobj.predef.substr){ //not a string, should be an object
+            } else if (!newoptionobj.predef.substr) { //not a string, should be an object
                 newoptionobj.predef = KOJSLINT.mixin({}, o.predef);
             }
         }
         return newoptionobj;
     }
-    function resetDefaultModes(o){
-        for(var i in o){
-            if(o.hasOwnProperty(i)){
+    function resetDefaultModes(o) {
+        for (var i in o) {
+            if (o.hasOwnProperty(i)) {
                 delete o[i];
             }
         }
         o.version = CURRENT_PREF_VER;
-        o.modes = [{label:'The Good Parts',id:'default',locked:true}, {label:'Custom',id:'custom'}];
+        o.modes = [{
+            label: 'The Good Parts',
+            id: 'default',
+            locked: true
+        },
+        {
+            label: 'Custom',
+            id: 'custom'
+        }];
         
         o.currentMode = o.modes[0].id;
         
@@ -109,17 +117,18 @@ if (!window.extensions.KOJSLINT) {
     // allow old preference objects to work with the latest version of JS Lint    
     function updatePref(o) {
         //resetDefaultModes(o);
-        if(o.version!==CURRENT_PREF_VER){
+        if (o.version !== CURRENT_PREF_VER) {
             resetDefaultModes(o);
             globalPrefsSet.setStringPref(prefsName, JSON.encode(o));
         }
         return o;
     }
     
-    function findModeObject(id){
-        var i=0, m;
-        for(;(m = prefsObject.modes[i]);i += 1){
-            if(m.id === id){
+    function findModeObject(id) {
+        var i = 0,
+        m;
+        for (; (m = prefsObject.modes[i]); i += 1) {
+            if (m.id === id) {
                 return m;
             }
         }
@@ -204,7 +213,7 @@ if (!window.extensions.KOJSLINT) {
         }
     }
 
-    function toggleLocked(e){
+    function toggleLocked(e) {
         var checkbox = e.target;
         if(checkbox === modeLockedCheckbox){
             var modeObj = findModeObject(currentConfName);
