@@ -13,6 +13,7 @@ if(!window.extensions.KOJSLINT){
                 o[i] = p[i];
             }
         }
+        return o;
     }};
 }
 
@@ -20,8 +21,9 @@ if(!window.extensions.KOJSLINT){
     var constCrockisms = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Your code is gorgeous', 'Crockford loves you', 'No-one\'s feelings hurt', 'No haz lint'], // evidence messages when there are no errors found
         constCrockismsBad = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', 'Slop'], // evidence messages when linting has to stop
         constCustomOptionsContainerId = 'kojslint2_groupbox_custom_options', // ID of the custom options container
-        constModeHeadingCustom = 'Custom options', // Heading to display above options in custom mode
-        constModeHeadingDefault = 'Default mode', // Heading to display above options in default mode
+        //constModeHeadingCustom = 'Custom options', // Heading to display above options in custom mode
+        //constModeHeadingDefault = 'Default mode', // Heading to display above options in default mode
+        CURRENT_PREF_VER=1,
         constIndentationInputId = 'kojslint2_textbox_indent',
         constOptionsTabId = 'kojslint2_options_tab', // ID of the options tab
         constOptionsTabPanelId = 'kojslint2_options_panel', // ID of the options panel
@@ -38,7 +40,7 @@ if(!window.extensions.KOJSLINT){
         constOptionsHeadingId = 'kojslint2_h4_custom', // ID of the options heading element
         constOptionsRadiosId = 'kojslint2_radiogroup_presets', // ID of the modes options radiogroup
         constPredefInputId = 'kojslint2_textbox_predef', // ID of the predef input
-        currentConfName='custom', // path to the current file
+        currentConfName, // path to the current file
         elCustomOptionsContainer, // reference to the container of the Custom options
         elErrorsTab, // reference to the tab element for the errors panel
         elErrorsTree, // reference to the tree containing the errors
@@ -52,11 +54,30 @@ if(!window.extensions.KOJSLINT){
         elPredefInput, // reference to the predef input
         elOptionsHeading, // reference to the options heading
         elOptionsPanel, // reference to the options panel
-        elOptionsRadios, // reference to the mode radiogroup
+        //elOptionsRadios, // reference to the mode radiogroup
         elsOptionsCheckboxes, // array of references to options checkboxes
         fileSavedobserver, // observer used to listen to file saved event
         globalPrefsSet, // where to find the preferences within komodo
-        options = {
+        prefsName = 'koJSLintPrefs', // name of stringPrefence in Komodo's prefs.xml
+        prefsObject, // preferences
+        JSON = Components.classes['@mozilla.org/dom/json;1']
+                 .createInstance(Components.interfaces.nsIJSON),
+        JSLINT = window.extensions.JSLINT,
+        KOJSLINT = window.extensions.KOJSLINT;
+
+    function resetDefaultModes(o){
+        for(var i in o){
+            if(o.hasOwnProperty(i)){
+                delete o[i];
+            }
+        }
+        o.version = CURRENT_PREF_VER;
+        o.modes = [{label:'The Good Parts',id:'default',locked:true}, {label:'Custom',id:'custom'}];
+        
+        o.currentMode = o.modes[0].id;
+        
+        o.options = {};
+        o.options['default'] = {
             bitwise : true, // if bitwise operators should not be allowed
             eqeqeq : true, // if === should be required
             immed : true, // if immediate invocations must be wrapped in parens
@@ -70,31 +91,31 @@ if(!window.extensions.KOJSLINT){
             predef : '', 
             regexp : true, // if the . should not be allowed in regexp literals
             undef : true, // if variables should be declared before used
-            strict : true, // require the "use strict"; pragma
             white : true // if strict whitespace rules apply
-        },
-        prefsName = 'koJSLintPrefs', // name of stringPrefence in Komodo's prefs.xml
-        prefsObject, // preferences
-        JSON = Components.classes['@mozilla.org/dom/json;1']
-                 .createInstance(Components.interfaces.nsIJSON),
-        JSLINT = window.extensions.JSLINT,
-        KOJSLINT = window.extensions.KOJSLINT; 
-
+        };
+        o.options['custom'] = KOJSLINT.mixin({}, o.options['default']);
+    }
     // allow old preference objects to work with the latest version of JS Lint    
-    function convertObjectToLatestVersion(o) {
-        if (o.es5 === undefined) {
-            o.es5 = options.es5;
+    function updatePref(o) {
+        resetDefaultModes(o);
+        if(o.version!==CURRENT_PREF_VER){
+            resetDefaultModes(o);
+            globalPrefsSet.setStringPref(prefsName, JSON.encode(o));
         }
-        if (o.sidebar !== undefined) {
-            o.windows = o.sidebar;
-            delete o.sidebar;
-        }
-        
         return o;
     }
     
+    function findModeObject(id){
+        var i=0, m;
+        for(;m=prefsObject.modes[i];i++){
+            if(m.id === id){
+                return m;
+            }
+        }
+    }
+    
     // set the options panel to reflect default mode
-    function enterCustomMode() {
+    function enterNewMode() {
         var i, // counter
             length = elsOptionsCheckboxes.length, // number of default checkboxes
             theCheckbox, // current checkbox
@@ -102,62 +123,37 @@ if(!window.extensions.KOJSLINT){
         
 //         currentConfName = 'custom';
 
-        elOptionsHeading.setAttribute('label', constModeHeadingCustom);      
+    
+        var modeobj = findModeObject(currentConfName), locked = modeobj && modeobj.locked;
+        modeLockedCheckbox.checked = locked;
+        //elOptionsHeading.setAttribute('label', constModeHeadingCustom);
         for (i = 0; i < length; i += 1) {
             theCheckbox = elsOptionsCheckboxes[i];
             thePref = theCheckbox.id;
-            theCheckbox.disabled = false;
-            theCheckbox.checked = prefsObject[currentConfName][thePref];
-            if (theCheckbox.className !== 'kojslint_checkbox defaultOption') {
-                theCheckbox.parentNode.className = '';
-            }
+            theCheckbox.disabled = locked;
+            theCheckbox.checked = prefsObject.options[currentConfName][thePref];
+            theCheckbox.className = (locked && !theCheckbox.checked) ? 'hidden' : '';
         } 
-        elOptionsRadios.selectedIndex = 1;
+        //elOptionsRadios.selectedIndex = 1;
     }
     
-    // set the options panel to reflect default mode
-    function enterDefaultMode() {
-        var i, // counter
-            length = elsOptionsCheckboxes.length, // number of default checkboxes
-            theCheckbox, // current checkbox
-            thePref; // current preference
-        
-        elOptionsHeading.setAttribute('label', constModeHeadingDefault);
-        for (i = 0; i < length; i += 1) {
-            theCheckbox = elsOptionsCheckboxes[i];
-            thePref = theCheckbox.id;
-            theCheckbox.checked = options[thePref];
-            
-            prefsObject[currentConfName][thePref] = options[thePref];
-            if (theCheckbox.className !== 'kojslint_checkbox defaultOption') {
-                theCheckbox.parentNode.className = 'hidden';
-                theCheckbox.checked = false;
-            }
-            else {
-                theCheckbox.checked = true;
-            }
-            theCheckbox.disabled = true;
-        }
-        elOptionsRadios.selectedIndex = 0;
-    }
-    
-    // when the custom option is selected
-    function eventCustomModeClicked() {
-        currentConfName = 'custom';
-        prefsGetFilePrefs();
-        enterCustomMode();
-    }
-    
-    // when the default option is selected
-    function eventDefaultModeClicked() {
-        currentConfName = 'default';
-        prefsGetFilePrefs();
-        enterDefaultMode();
-    }
+    //// when the custom option is selected
+    //function eventCustomModeClicked() {
+    //    currentConfName = 'custom';
+    //    prefsGetFilePrefs();
+    //    enterNewMode();
+    //}
+    //
+    //// when the default option is selected
+    //function eventDefaultModeClicked() {
+    //    currentConfName = 'default';
+    //    prefsGetFilePrefs();
+    //    enterDefaultMode();
+    //}
     
     // update a preference
     function prefsSet(pref, val) {
-        prefsObject[currentConfName][pref] = val;
+        prefsObject.options[currentConfName][pref] = val;
     }
     
     // when the indentation input has been changed
@@ -179,7 +175,7 @@ if(!window.extensions.KOJSLINT){
         elMaxLenInput = document.getElementById(constMaxLenInputId);
         elOptionsHeading = document.getElementById(constOptionsHeadingId);
         elOptionsPanel = document.getElementById(constOptionsTabPanelId);
-        elOptionsRadios = document.getElementById(constOptionsRadiosId);
+        //elOptionsRadios = document.getElementById(constOptionsRadiosId);
         elPredefInput = document.getElementById(constPredefInputId);
         elsOptionsCheckboxes = elCustomOptionsContainer.getElementsByTagName('checkbox');
     }
@@ -189,31 +185,27 @@ if(!window.extensions.KOJSLINT){
         var previous, // traverse until we find previous sibling
             theCheckbox; // checkbox element for the selected option
         
-        if (e.target.value) {
-            previous = e.target.previousSibling;
-            while (previous.nodeType !== 1) {
-                previous = previous.previousSibling;
-            }
-            theCheckbox = previous;
-            
-            // clicking the label doesn't change the checkbox state, so I need to do it manually
-            if (!theCheckbox.disabled) {
-                if (theCheckbox.checked) {
-                    theCheckbox.checked = false;
-                }
-                else {
-                    theCheckbox.checked = true;
-                }
-            }
-        }
-        else {
-            theCheckbox = e.target;
-        }            
+        theCheckbox = e.target;
+
         if (!theCheckbox.disabled) {
-            prefsObject[currentConfName][theCheckbox.id] = theCheckbox.checked;
+            prefsObject.options[currentConfName][theCheckbox.id] = theCheckbox.checked;
         }
     }
-    
+
+    function toggleLocked(e){
+        try{
+        var checkbox = e.target;
+        if(checkbox === modeLockedCheckbox){
+            var modeObj = findModeObject(currentConfName);
+
+            if(!!(modeObj && modeObj.locked) !== checkbox.checked){
+                modeObj.locked = !modeObj.locked;
+                updateOptionsPanel();
+            }
+            return;
+        }
+        }catch(e){alert(JSON.encode(e))}
+    }
     // when the max err input is changed
     function eventMaxErrChanged() {
         prefsSet('maxerr', parseInt(elMaxErrInput.value, 10));
@@ -222,15 +214,6 @@ if(!window.extensions.KOJSLINT){
     // when the max line length input is changed
     function eventMaxLenChanged() {
         prefsSet('maxlen', parseInt(elMaxLenInput.value, 10));
-    }
-        
-    function eventModeSelected(e) {
-        if (elOptionsRadios.selectedIndex === 0) {
-            eventDefaultModeClicked();    
-        }
-        else {
-            eventCustomModeClicked();
-        }
     }
     
     // when the predefined variables input is changed
@@ -241,7 +224,7 @@ if(!window.extensions.KOJSLINT){
     // observe changes to the options
     function observeOptionsEvents() {
         elCustomOptionsContainer.addEventListener('click', eventOptionClicked, false);
-        elOptionsRadios.addEventListener('click', eventModeSelected, false);
+        //elOptionsRadios.addEventListener('click', eventModeSelected, false);
         elIndentationInput.addEventListener('change', eventIndentationChanged, false);
         elIndentationInput.addEventListener('keyup', eventIndentationChanged, false);
         elMaxErrInput.addEventListener('change', eventMaxErrChanged, false);
@@ -253,46 +236,26 @@ if(!window.extensions.KOJSLINT){
     
     // set the options panel to reflect the stored options
     function updateOptionsPanel() {
-        var currBox,
-            currId,
-            defaultMode = true, // set to true if the preferences for the file are default
-            i, // counter
-            length = elsOptionsCheckboxes.length; // number of checkbox options
-                   
-        // check to see if we should go into default or custom mode
-        for (i = 0; i < length; i += 1) {
-            currBox = elsOptionsCheckboxes[i];
-            currId = currBox.id;
-            if (prefsObject[currentConfName][currId] !== options[currId]) {
-                defaultMode = false;
-                
-                break;
-            }
-        }
-        if (defaultMode) {
-            enterDefaultMode();
-        }
-        else {
-            enterCustomMode();
-        }
+        enterNewMode();
         
-        elIndentationInput.value = prefsObject[currentConfName].indent;
-        elMaxErrInput.value = prefsObject[currentConfName].maxerr;
-        elMaxLenInput.value = prefsObject[currentConfName].maxlen;
-        elPredefInput.value = prefsObject[currentConfName].predef;
+        elIndentationInput.value = prefsObject.options[currentConfName].indent;
+        elMaxErrInput.value = prefsObject.options[currentConfName].maxerr;
+        elMaxLenInput.value = prefsObject.options[currentConfName].maxlen;
+        elPredefInput.value = prefsObject.options[currentConfName].predef || '';
     }
     
     // get the preferences for the file at the current view
     function prefsGetFilePrefs() {
         var property,
-            tempObj;
+            tempObj,
+            options = prefsObject.options['default'];
             
-        if (!prefsObject[currentConfName]) {
-            prefsObject[currentConfName] = {};
+        if (!prefsObject.options[currentConfName]) {
+            prefsObject.options[currentConfName] = {};
             
             for (property in options) {
                 if (options.hasOwnProperty(property)) {
-                    prefsObject[currentConfName][property] = options[property];
+                    prefsObject.options[currentConfName][property] = options[property];
                 }
             }
         }
@@ -528,11 +491,11 @@ if(!window.extensions.KOJSLINT){
                     sm.insertText(startpos + reg.lastIndex - 1, ', 10');
                 }
                 break;
-			case "Extra comma.":
-				if(sm.getTextRange(errorpos, errorpos+1)===','){
-					deleteRange(sm, errorpos, 1);
-				}
-				break;
+            case "Extra comma.":
+                if(sm.getTextRange(errorpos, errorpos+1)===','){
+                    deleteRange(sm, errorpos, 1);
+                }
+                break;
             default:
                 alert("Don't know how to auto fix error "+JSON.encode(result));
                 return;
@@ -602,13 +565,11 @@ if(!window.extensions.KOJSLINT){
             theString = globalPrefsSet.getStringPref(prefsName);
             if (theString) {
                 theObject = JSON.decode(theString);
-                
-                // we are using a new version of JS Lint that has new options that we have to allow for
-                theObject = convertObjectToLatestVersion(theObject);
             }
             else {
                 theObject = {};
             }
+            theObject = updatePref(theObject);
         }
         catch (err) {
             theObject = {};
@@ -624,15 +585,16 @@ if(!window.extensions.KOJSLINT){
     
     // when a tab is closed, if its options are all default, we don't want to save its preferences to file
     function removeUnchangedPrefs() {
+        return;
         var keep = false, // set to false if we want to remove the preference
             property;
 
-        for (property in prefsObject[currentConfName]) {
-            if (prefsObject[currentConfName][property] !== options[property]) {
+        for (property in prefsObject.options[currentConfName]) {
+            if (prefsObject.options[currentConfName][property] !== options[property]) {
                 if (property === 'predef') {
                     
                     // I'm sure there is a better way to do this
-                    if (!prefsObject[currentConfName][property] || (JSON.encode(prefsObject[currentConfName][property]) === '[""]')) {
+                    if (!prefsObject.options[currentConfName][property] || (JSON.encode(prefsObject.options[currentConfName][property]) === '[""]')) {
                         
                         continue;
                     }
@@ -643,7 +605,7 @@ if(!window.extensions.KOJSLINT){
             }
         }
         if (!keep) {
-            delete prefsObject[currentConfName];
+            delete prefsObject.options[currentConfName];
         }
     }
     
@@ -651,20 +613,21 @@ if(!window.extensions.KOJSLINT){
     function createObjIfRequired() {
         var i, // counter
             length,
-            theCheckbox;
+            theCheckbox,
+            prefs;
 
 //         setCurrentPath(ko.views.manager.currentView);
-        if (!prefsObject[currentConfName]) {
-            prefsObject[currentConfName] = {};
+        if (!prefsObject.options[currentConfName]) {
+            prefs = prefsObject.options[currentConfName] = {};
             length = elsOptionsCheckboxes.length;
             for (i = 0; i < length; i += 1) {
                 theCheckbox = elsOptionsCheckboxes[i];
-                prefsObject[currentConfName][theCheckbox.id] = theCheckbox.checked;
+                prefs[currentConfName][theCheckbox.id] = theCheckbox.checked;
             }
-            prefsObject[currentConfName].indent = elIndentationInput.value;
-            prefsObject[currentConfName].maxlen = elMaxLenInput.value;
-            prefsObject[currentConfName].maxerr = elMaxErrInput.value;
-            prefsObject[currentConfName].predef = elPredefInput.value.split(' ').join('').split(',');
+            prefs[currentConfName].indent = elIndentationInput.value;
+            prefs[currentConfName].maxlen = elMaxLenInput.value;
+            prefs[currentConfName].maxerr = elMaxErrInput.value;
+            prefs[currentConfName].predef = elPredefInput.value.split(' ').join('').split(',');
         }
     }
     
@@ -724,7 +687,7 @@ if(!window.extensions.KOJSLINT){
 
         prefsGetFilePrefs();
         window.addEventListener('current_view_changed', eventTabChanged, false);
-        updateOptionsPanel();
+
         observeOptionsEvents();
         fileSavedobserver = new FileSavedObserver();
         window.addEventListener('view_closing', eventTabClosing, false);
@@ -744,11 +707,54 @@ if(!window.extensions.KOJSLINT){
         
         // keyboard events need to be on the tree rather than the treechildren element
         elFunctionsTree.addEventListener('keyup', eventFunctionKeyup, false);
+        //setup mode menulist
+        mode_menulist = document.getElementById('kojslint_mode_menulist');
+        mode_menulist.addEventListener('select', eventModeChange, false);
+        
+        mode_menulist_popup = document.getElementById('kojslint_mode_popup');
+        populateModePopup();
+        
+        modeLockedCheckbox = document.getElementById('kojslint_mode_locked');
+        modeLockedCheckbox.addEventListener('click', toggleLocked, false);
+        
+        updateOptionsPanel();
     }
     
+    var mode_menulist, mode_menulist_popup, modeLockedCheckbox;
+    function eventModeChange(){
+        if(mode_menulist.value !== currentConfName){
+            currentConfName = mode_menulist.value;
+            prefsObject.currentMode = currentConfName;
+            updateOptionsPanel();
+        }
+    }
+    function populateModePopup(){
+        modeMenuNotDirty = true;
+        var popup = mode_menulist_popup, i=0, mode, menuitem, foundCurrent;
+        while(popup.firstChild){
+            popup.removeChild(popup.firstChild);
+        }
+
+        while((mode = prefsObject.modes[i++])){
+            menuitem = document.createElement('menuitem');
+            menuitem.setAttribute('label', mode.label);
+            menuitem.setAttribute('value', mode.id);
+            //menuitem.setAttribute('command', mode.id);
+            if(mode.id === currentConfName){
+                foundCurrent = mode.id;
+            }
+            popup.appendChild(menuitem);
+        }
+        if(foundCurrent){
+            mode_menulist.value = foundCurrent;
+        }
+    }
     function init() {
+        try{
         prefsObject = prefsGetPrefsObject();
+        currentConfName = prefsObject.currentMode;
         observeWindowEvents();
+        }catch(e){alert(JSON.encode(e))}
     }
     
     // remove items from output panel
@@ -1112,14 +1118,13 @@ if(!window.extensions.KOJSLINT){
     
     // run JSLint
     function run() {
-        var myResult;
-        
+        try{
         window.setCursor('wait');
         // Object.create below is to prevent JSLINT from modifying the options object (it will set new options 
         // on this object when it encounters inline options)
-        myResult = JSLINT(ko.views.manager.currentView.document.buffer, Object.create(prefsObject[currentConfName]));
-        viewShow(JSLINT.data());
-        window.setCursor('default');  
+        viewShow(expose());
+        window.setCursor('default');
+        }catch(e){alert(JSON.encode(e))}
     }
     
     // provide keyboard access to the errors results
@@ -1152,7 +1157,7 @@ if(!window.extensions.KOJSLINT){
     }
     
     function expose() {
-        var myResult = JSLINT(ko.views.manager.currentView.document.buffer, prefsObject[currentConfName]);
+        var myResult = JSLINT(ko.views.manager.currentView.document.buffer, Object.create(prefsObject.options[currentConfName]));;
             
         return JSLINT.data();
     }

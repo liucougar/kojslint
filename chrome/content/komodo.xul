@@ -22,131 +22,46 @@
 		<tabpanel id="kojslint2_options_panel" flex="1" minwidth="355">
 			<vbox flex="1" style="overflow:auto;"> 
 				<groupbox>
-					<caption id="kojslint2_h4_mode" label="Mode" />
-					<stack>
-						<radiogroup id="kojslint2_radiogroup_presets">
-							<radio id="kojslint2_radio_default" label="Default (The Good Parts)" value="default" />
-							<radio id="kojslint2_radio_custom" label="Custom" value="custom" />
-						</radiogroup>
-					</stack>
+					<hbox>
+						<caption id="kojslint2_h4_mode" label="Mode" />
+						<menulist id="kojslint_mode_menulist">
+							<menupopup id="kojslint_mode_popup"></menupopup>
+						</menulist>
+					</hbox>
+					<hbox>
+						<caption id="kojslint2_h4_custom" label="Options" />
+						<checkbox label="Locked" id="kojslint_mode_locked" class="kojslint_checkbox" />
+					</hbox>
 					<groupbox id="kojslint2_groupbox_custom_options">
-						<caption id="kojslint2_h4_custom" label="Custom options" />
-						<hbox>
-							<checkbox id="passfail" class="kojslint_checkbox" />
-							<label control="passfail" value="Stop on first error" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="white" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="white" value="Strict white space" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="browser" class="kojslint_checkbox" />
-							<label control="browser" value="Assume a browser" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="devel" class="kojslint_checkbox" />
-							<label control="devel" value="Assume console, alert, ..." class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="widget" class="kojslint_checkbox" />
-							<label control="widget" value="Assume a Yahoo Widget" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="windows" class="kojslint_checkbox" />
-							<label control="windows" value="Assume Windows" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="rhino" class="kojslint_checkbox" />
-							<label control="rhino" value="Assume Rhino" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="safe" class="kojslint_checkbox" />
-							<label control="safe" value="Safe Subset" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="adsafe" class="kojslint_checkbox" />
-							<label control="adsafe" value="ADsafe" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="debug" class="kojslint_checkbox" />
-							<label control="debug" value="Tolerate debugger statements" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="evil" class="kojslint_checkbox" />
-							<label control="evil" value="Tolerate eval" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="laxbreak" class="kojslint_checkbox" />
-							<label control="laxbreak" value="Tolerate sloppy line breaking" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="forin" class="kojslint_checkbox" />
-							<label control="forin" value="Tolerate unfiltered for in" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="sub" class="kojslint_checkbox" />
-							<label control="sub" value="Tolerate inefficient subscripting" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="css" class="kojslint_checkbox" />
-							<label control="css" value="Tolerate CSS workarounds" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="cap" class="kojslint_checkbox" />
-							<label control="cap" value="Tolerate HTML case" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="on" class="kojslint_checkbox" />
-							<label control="on" value="Tolerate HTML event handlers" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="fragment" class="kojslint_checkbox" />
-							<label control="fragment" value="Tolerate HTML fragments" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="es5" class="kojslint_checkbox" />
-							<label control="es5" value="Tolerate ES5 syntax" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="onevar" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="onevar" value="Allow one var statement per function" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="undef" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="undef" value="Disallow undefined variables" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="nomen" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="nomen" value="Disallow dangling _ in identifiers" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="eqeqeq" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="eqeqeq" value="Disallow == and !=" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="plusplus" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="plusplus" value="Disallow ++ and --" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="bitwise" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="bitwise" value="Disallow bitwise operators" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="regexp" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="regexp" value="Disallow insecure . and [^...] in /RegExp/" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="newcap" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="newcap" value="Require Initial Caps for constructors" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="immed" checked="true" class="kojslint_checkbox defaultOption" />
-							<label control="immed" value="Require parens around immediate invocations" class="kojslint_label" />
-						</hbox>
-						<hbox>
-							<checkbox id="strict" class="kojslint_checkbox defaultOption" />
-							<label control="strict" value="Require 'use strict';" class="kojslint_label" />
-						</hbox>
+						<checkbox id="passfail" class="kojslint_checkbox" label="Stop on first error" />
+						<checkbox id="white" checked="true" class="kojslint_checkbox" label="Strict white space" />
+						<checkbox id="browser" class="kojslint_checkbox" label="Assume a browser" />
+						<checkbox id="devel" class="kojslint_checkbox" label="Assume console, alert, ..." />
+						<checkbox id="widget" class="kojslint_checkbox" label="Assume a Yahoo Widget" />
+						<checkbox id="windows" class="kojslint_checkbox" label="Assume Windows" />
+						<checkbox id="rhino" class="kojslint_checkbox" label="Assume Rhino" />
+						<checkbox id="safe" class="kojslint_checkbox" label="Safe Subset" />
+						<checkbox id="adsafe" class="kojslint_checkbox" label="ADsafe" />
+						<checkbox id="debug" class="kojslint_checkbox" label="Tolerate debugger statements"/>
+						<checkbox id="evil" class="kojslint_checkbox" label="Tolerate eval" />
+						<checkbox id="laxbreak" class="kojslint_checkbox" label="Tolerate sloppy line breaking" />
+						<checkbox id="forin" class="kojslint_checkbox" label="Tolerate unfiltered for in" />
+						<checkbox id="sub" class="kojslint_checkbox" label="Tolerate inefficient subscripting" />
+						<checkbox id="css" class="kojslint_checkbox" label="Tolerate CSS workarounds" />
+						<checkbox id="cap" class="kojslint_checkbox" label="Tolerate HTML case" />
+						<checkbox id="on" class="kojslint_checkbox" label="Tolerate HTML event handlers" />
+						<checkbox id="fragment" class="kojslint_checkbox" label="Tolerate HTML fragments" />
+						<checkbox id="es5" class="kojslint_checkbox" label="Tolerate ES5 syntax" />
+						<checkbox id="onevar" checked="true" class="kojslint_checkbox" label="Allow one var statement per function" />
+						<checkbox id="undef" checked="true" class="kojslint_checkbox" label="Disallow undefined variables" />
+						<checkbox id="nomen" checked="true" class="kojslint_checkbox" label="Disallow dangling _ in identifiers" />
+						<checkbox id="eqeqeq" checked="true" class="kojslint_checkbox" label="Disallow == and !=" />
+						<checkbox id="plusplus" checked="true" class="kojslint_checkbox" label="Disallow ++ and --" />
+						<checkbox id="bitwise" checked="true" class="kojslint_checkbox" label="Disallow bitwise operators" />
+						<checkbox id="regexp" checked="true" class="kojslint_checkbox" label="Disallow insecure . and [^...] in /RegExp/" />
+						<checkbox id="newcap" checked="true" class="kojslint_checkbox" label="Require Initial Caps for constructors" />
+						<checkbox id="immed" checked="true" class="kojslint_checkbox" label="Require parens around immediate invocations" />
+						<checkbox id="strict" class="kojslint_checkbox" label="Require 'use strict';" />
 					</groupbox>
 				</groupbox>
 				<groupbox>

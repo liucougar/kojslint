@@ -1,0 +1,6 @@
+ChangeLog since kjslint 2.1.3:
+- remove JSON2, use nsIJSON instead
+- separate out jslint.js
+- change per-file mode (jslint options) to global mode (each mode can be applied to multiple files)
+- changed radio buttons to a select box for selection of mode
+- a mode can be locked to prevent further changes (until it's unlocked)
