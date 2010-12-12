@@ -399,7 +399,7 @@ if (!window.extensions.KOJSLINT) {
                     var op=result.a.substr(0,2),i=0;
                     var compwith=result.b;
                     if(!compwith){
-                        compwith="(?:\"\"|'')";
+                        compwith = "(?:\"\"|'')";
                     }
                     var reg=new RegExp(op+'\\s*'+compwith+'|'+compwith+'\\s*'+op,'g');
                     var inspos;
@@ -519,6 +519,14 @@ if (!window.extensions.KOJSLINT) {
                 if (sm.getTextRange(errorpos - result.a.length, errorpos) === result.a) {
                     sm.insertText(errorpos, ' ');
                 } else {
+                    alert("The line is changed, can't auto fix");
+                    return;
+                }
+                break;
+            case "Unexpected space after '{a}'.":
+                if (sm.getTextRange(errorpos - 1, errorpos) === ' '){
+                    deleteRange(sm, errorpos-1, 1);
+                }else{
                     alert("The line is changed, can't auto fix");
                     return;
                 }
