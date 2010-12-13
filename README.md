@@ -1,6 +1,6 @@
 KoJSLint
 ========
-Komodo (IDE/Editor) extension for integrating with [JSLint] and automatically fixing some common jslint warnings.
+Komodo (IDE/Edit) extension for integrating with [JSLint] and automatically fixing some common jslint warnings.
 
 I'd like to thank Ben Smawfield for allowing me to fork [kjslint] to become this komodo extension.
 
