@@ -7,8 +7,9 @@
     <em:version>2.5</em:version>
     <em:description>JSLint Komodo integration</em:description>
     <em:creator>liucougar</em:creator>
-    <em:homepageURL>https://github.com/liucougar/kojslint</em:homepageURL>
-    <em:type>2</em:type> <!-- type=extension --> 
+    <em:homepageURL>http://www.liucougar.net/blog/projects/kojslint</em:homepageURL>
+    <em:contributor>Ben Smawfield</em:contributor>
+    <em:type>2</em:type> <!-- type=extension -->
 
     <em:targetApplication> <!-- Komodo IDE -->
       <Description>
