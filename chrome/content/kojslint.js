@@ -1,10 +1,5 @@
 'use strict';
 
-// add koJSLint to the recommended Komodo extensions namespace
-// @see http://www.openkomodo.com/blogs/jeffg/namespaces-please
-if (typeof(window.extensions) === 'undefined') {
-    window.extensions = {};
-}
 if (!window.extensions.KOJSLINT) {
     window.extensions.KOJSLINT = {
         mixin: function (o, p) {
