@@ -1,3 +1,5 @@
 Show lint errors as marker in the source file http://community.activestate.com/forum/scimoz-api-examples
 
 support auto-fix multiple errors https://developer.mozilla.org/en/XUL_Tutorial/Tree_Selection
+
+most jslint options are for javascript, but some are for html, and one for css. may want to hide other options if the current file is one of them
