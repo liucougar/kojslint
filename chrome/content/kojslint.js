@@ -207,20 +207,6 @@ if (!window.extensions.KOJSLINT) {
         //elOptionsRadios.selectedIndex = 1;
     }
 
-    //// when the custom option is selected
-    //function eventCustomModeClicked() {
-    //    currentConfName = 'custom';
-    //    prefsGetFilePrefs();
-    //    enterNewMode();
-    //}
-    //
-    //// when the default option is selected
-    //function eventDefaultModeClicked() {
-    //    currentConfName = 'default';
-    //    prefsGetFilePrefs();
-    //    enterDefaultMode();
-    //}
-
     // update a preference
     function prefsSet(pref, val) {
         prefsObject.options[currentConfName][pref] = val;
@@ -311,26 +297,8 @@ if (!window.extensions.KOJSLINT) {
         elMaxLenInput.value = prefsObject.options[currentConfName].maxlen;
         elPredefInput.value = prefsObject.options[currentConfName].predef || '';
     }
-
-    // get the preferences for the file at the current view
-    function prefsGetFilePrefs() {
-        var property, tempObj, options = prefsObject.options['default'];
-
-        if (!prefsObject.options[currentConfName]) {
-            prefsObject.options[currentConfName] = {};
-
-            for (property in options) {
-                if (options.hasOwnProperty(property)) {
-                    prefsObject.options[currentConfName][property] = options[property];
-                }
-            }
-        }
-    }
-
     // when a tab is changed
     function eventTabChanged(e) {
-        //         setCurrentPath(e.originalTarget);
-        prefsGetFilePrefs();
         updateOptionsPanel();
     }
 
@@ -644,22 +612,24 @@ if (!window.extensions.KOJSLINT) {
 
     // get stored preferences
     function prefsGetPrefsObject() {
-        var theObject, // preferences object from the preferences file
+        var theObject = {}, // preferences object from the preferences file
         theString;
 
         globalPrefsSet = Components.classes['@activestate.com/koPrefService;1'].getService(Components.interfaces.koIPrefService).prefs;
-        try {
+        
+        if (globalPrefsSet.hasStringPref(prefsName)) {
             theString = globalPrefsSet.getStringPref(prefsName);
             if (theString) {
-                theObject = JSON.decode(theString);
-            } else {
-                theObject = {};
+                try{
+                    theObject = JSON.decode(theString);
+                }catch(err){
+                    //failed to decode the JSON string, just ignore it
+                }
             }
-            theObject = updatePref(theObject);
-        } catch (err) {
-            theObject = {};
         }
-
+        
+        theObject = updatePref(theObject);
+        
         return theObject;
     }
 
@@ -740,9 +710,6 @@ if (!window.extensions.KOJSLINT) {
     function observeWindowEvents() {
         getElements();
 
-        //         currentConfName = 'temp';//getCurrentPath(ko.views.manager.currentView)
-
-        prefsGetFilePrefs();
         window.addEventListener('current_view_changed', eventTabChanged, false);
 
         observeOptionsEvents();
