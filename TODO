@@ -3,3 +3,7 @@ Show lint errors as marker in the source file http://community.activestate.com/f
 support auto-fix multiple errors https://developer.mozilla.org/en/XUL_Tutorial/Tree_Selection
 
 most jslint options are for javascript, but some are for html, and one for css. may want to hide other options if the current file is one of them
+
+refactor autofix to be function based
+
+split files: a file for jslint option sidebar, one for generate the output grid, and one for autofix
