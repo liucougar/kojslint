@@ -1,7 +1,7 @@
 KoJSLint
 ========
 
-Komodo (IDE/Edit) extension for integrating with [JSLint] and automatically fixing some common jslint warnings.
+Komodo (IDE/Edit) extension to integrating with [JSLint] providing lint warnings/errors/function report and automatically fixing some common jslint warnings.
 
 Once installed, the extension can be accessed via `Tools` -> `JS Lint`. The jslint run command can be assigned a shortcut key.
 
@@ -12,11 +12,13 @@ I'd like to thank Ben Smawfield for allowing me to fork [kjslint] to become this
 
 FEATURES
 --------
+- provide UI to modify all available JSLint options
 - profiles of jslint options can be saved (called mode) which are available for all files/projects
 - add/delete profiles (modes)
 - auto-fix some common jslint warnings
 - all jslint warnings on the same line are grouped in the "JSLint errors" output tab
-- profiles can be locked (it can't be changed/deleted until being unlocked)
+- profiles can be locked (it can't be changed/deleted until unlocked)
+- bundled with JSLint 2010-12-08
 
 AutoFix
 -------
