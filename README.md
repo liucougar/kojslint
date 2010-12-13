@@ -13,11 +13,11 @@ I'd like to thank Ben Smawfield for allowing me to fork [kjslint] to become this
 FEATURES
 --------
 - provide UI to modify all available JSLint options
-- profiles of jslint options can be saved (called mode) which are available for all files/projects
+- save jslint options as profiles (called modes) which are shared for all files/projects
 - add/delete profiles (modes)
+- profiles can be locked (it can't be changed/deleted until unlocked)
 - auto-fix some common jslint warnings
 - all jslint warnings on the same line are grouped in the "JSLint errors" output tab
-- profiles can be locked (it can't be changed/deleted until unlocked)
 - bundled with JSLint 2010-12-08
 
 AutoFix
