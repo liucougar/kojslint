@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ ! -f kojslint.js ]; then
-	echo "Please run this script under chrome/content"
+	echo "automatically download jslint and modify it so it can be used in this extension; Please run this script under chrome/content."
 	exit 1
 fi
 
