@@ -28,10 +28,13 @@ This extension can be installed through `Tools` -> `Add-ons`, `Get Add-ons` tab.
 
 SOURCE/BUGS/LICENSE
 ------------------
-Source code is available from [github]. If you have any issues to report, please use github [issue tracker].
+Source code is available from [github].
 
-KoJSLint is licensed with Mozilla Public License 1.1 ([MPL]), except the jslint.js file which is covered by the license block at the top of that file.
+KoJSLint is licensed under Mozilla Public License 1.1 ([MPL]), except the jslint.js file which is covered by the license block at the top of that file.
+
+If something is not working properly, please try to post all relevant error messages in the Error Console (see [Debug komodo extensions] on how to enable that) with your [bug report].
 
   [github]: http://github.com/liucougar/kojslint
-  [issue tracker]: http://github.com/liucougar/kojslint/issues
+  [Debug komodo extensions]: http://www.liucougar.net/blog/archives/262
+  [bug report]: http://github.com/liucougar/kojslint/issues
   [MPL]: http://www.opensource.org/licenses/mozilla1.1.php
