@@ -391,17 +391,13 @@ if (!window.extensions.KOJSLINT) {
                 }
             }
         }
-        //         alert(txt+' '+startpos+' '+errorpos+' '+endpos);
+
         switch (result.raw) {
         case 'Missing semicolon.':
             if (lineIsChanged(true)) {
                 return;
             }
-            //ko.dialogs.alert(txt.slice(-2,-1)); 
-            //                 if(txt && ! /;[\s\n\r]*$/.test(txt)){ //prevent double insert
             sm.insertText(errorpos, ';');
-            //this.moveCursorToMessage(view, result);
-            //                 }
             break;
         case "Use '{a}' to compare with '{b}'.":
             if (lineIsChanged(true)) {
@@ -508,8 +504,6 @@ if (!window.extensions.KOJSLINT) {
                 sm.gotoPos(startreplace);
                 sm.selectionStart = startreplace;
                 sm.selectionEnd = startreplace + 4 + result.a.length;
-                //ko.dialogs.alert(startreplace+" "+sm.selectionEnd);
-                //sm.deleteBack();
                 sm.replaceSel("." + result.a);
             }
             break;
@@ -815,13 +809,9 @@ if (!window.extensions.KOJSLINT) {
         }
     }
     function init() {
-        try {
-            prefsObject = prefsGetPrefsObject();
-            currentConfName = prefsObject.currentMode;
-            observeWindowEvents();
-        } catch (e) {
-            alert(JSON.encode(e));
-        }
+        prefsObject = prefsGetPrefsObject();
+        currentConfName = prefsObject.currentMode;
+        observeWindowEvents();
     }
 
     // remove items from output panel
@@ -1182,15 +1172,11 @@ if (!window.extensions.KOJSLINT) {
 
     // run JSLint
     function run() {
-        try {
-            window.setCursor('wait');
-            // Object.create below is to prevent JSLINT from modifying the options object (it will set new options 
-            // on this object when it encounters inline options)
-            viewShow(expose());
-            window.setCursor('default');
-        } catch (e) {
-            alert(JSON.encode(e));
-        }
+        window.setCursor('wait');
+        // Object.create below is to prevent JSLINT from modifying the options object (it will set new options 
+        // on this object when it encounters inline options)
+        viewShow(expose());
+        window.setCursor('default');
     }
 
     // provide keyboard access to the errors results
