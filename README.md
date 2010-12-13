@@ -1,6 +1,9 @@
 KoJSLint
 ========
+
 Komodo (IDE/Edit) extension for integrating with [JSLint] and automatically fixing some common jslint warnings.
+
+Once installed, the extension can be accessed via `Tools` -> `JS Lint`. The jslint run command can be assigned a shortcut key.
 
 I'd like to thank Ben Smawfield for allowing me to fork [kjslint] to become this komodo extension.
 
@@ -18,6 +21,10 @@ FEATURES
 AutoFix
 -------
 To access the AutoFix feature, right click on a row in the "JSLint errors" output tab to auto fix that particular warning. If you are auto-fixing multiple warnings on the same line, try to begin with the last warning for that particular line, and move backward.
+
+Download/Install
+----------------
+This extension can be installed through `Tools` -> `Add-ons`, `Get Add-ons` tab.
 
 SOURCE/BUGS/LICENSE
 ------------------
