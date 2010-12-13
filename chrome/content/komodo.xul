@@ -79,13 +79,13 @@
 						</vbox>
 					</vbox>
 					<vbox class="last">
-                        <hbox>
-                            <label control="kojslint2_textbox_maxlen" value="Maximum line length"/>
-                            <stack>
-                                <image id="kojslint2_image_iconInfo" style="cursor:help;" tooltiptext="Set to 0 to allow any line length" top="1" />
-                            </stack>
-                        </hbox>
-                        <vbox id="kojslint2_vbox_maxlen">
+						<hbox>
+							<label control="kojslint2_textbox_maxlen" value="Maximum line length"/>
+							<stack>
+								<image id="kojslint2_image_iconInfo" style="cursor:help;" tooltiptext="Set to 0 to allow any line length" top="1" />
+							</stack>
+						</hbox>
+						<vbox id="kojslint2_vbox_maxlen">
 							<textbox id="kojslint2_textbox_maxlen" maxlength="3" size="3" type="number" value="150" />
 						</vbox>
 					</vbox>
