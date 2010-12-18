@@ -157,7 +157,7 @@ if (!window.extensions.KOJSLINT) {
         };
         o.options.custom = copyMode(o.options['default']);
     }
-    // allow old preference objects to work with the latest version of JS Lint    
+    // allow old preference objects to work with the latest version of JS Lint
     function updatePref(o) {
         //resetDefaultModes(o);
         if (o.version !== CURRENT_PREF_VER) {
@@ -466,6 +466,12 @@ if (!window.extensions.KOJSLINT) {
             //need focus to run command
             view.setFocus();
             ko.commands.doCommand(useTab ? 'cmd_tabify': 'cmd_untabify');
+            var newtext = sm.getTextRange(startpos, endpos);
+            if (newtext === txt) {
+                newtext = useTab ? newtext.replace(/\s/g, '') :
+                  newtext.replace(/\t/g, '    ');
+                sm.replaceSel(newtext);
+            }
             //move cursor to the begining of the line
             sm.gotoPos(sm.getLineIndentPosition(line));
             break;
@@ -605,20 +611,20 @@ if (!window.extensions.KOJSLINT) {
         theString;
 
         globalPrefsSet = Components.classes['@activestate.com/koPrefService;1'].getService(Components.interfaces.koIPrefService).prefs;
-        
+
         if (globalPrefsSet.hasStringPref(prefsName)) {
             theString = globalPrefsSet.getStringPref(prefsName);
             if (theString) {
-                try{
+                try {
                     theObject = JSON.decode(theString);
-                }catch(err){
+                } catch (err) {
                     //failed to decode the JSON string, just ignore it
                 }
             }
         }
-        
+
         theObject = updatePref(theObject);
-        
+
         return theObject;
     }
 
@@ -798,7 +804,7 @@ if (!window.extensions.KOJSLINT) {
                 alert('Can not delete a locked mode');
                 return;
             }
-            if (!confirm('Do you really want to delete mode "'+ modeobj.label +'" (once deleted, there is no way to get it back)?')) {
+            if (!confirm('Do you really want to delete mode "' + modeobj.label + '" (once deleted, there is no way to get it back)?')) {
                 return;
             }
             var index = mode_menulist.selectedIndex;
@@ -977,7 +983,7 @@ if (!window.extensions.KOJSLINT) {
         // treecell to contain the function unused
         theVarsTreecell = document.createElement('treecell'); // treecell to contain the function variables
 
-        // line                            
+        // line
         theLineTreecell.setAttribute('label', theFunction.line);
         theLineTreecell.setAttribute('tooltip', 'true');
         theLineTreecell.setAttribute('tooltiptext', theFunction.line);
@@ -1173,7 +1179,7 @@ if (!window.extensions.KOJSLINT) {
     // run JSLint
     function run() {
         window.setCursor('wait');
-        // Object.create below is to prevent JSLINT from modifying the options object (it will set new options 
+        // Object.create below is to prevent JSLINT from modifying the options object (it will set new options
         // on this object when it encounters inline options)
         viewShow(expose());
         window.setCursor('default');
