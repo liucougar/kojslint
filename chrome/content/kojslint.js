@@ -349,7 +349,8 @@ if (!window.extensions.KOJSLINT) {
         var line = result.line - 1;
         var txt = getLineText(view, line);
         var startpos = sm.positionAtColumn(line, 0);
-        var errorpos = sm.positionAtColumn(line, result.character - 1);
+        var column = result.character - 1;
+        var errorpos = sm.positionAtColumn(line, column);
         var endpos = sm.getLineEndPosition(line);
 
         function lineIsChanged(full) {
@@ -514,10 +515,16 @@ if (!window.extensions.KOJSLINT) {
             }
             break;
         case "Missing radix parameter.":
-            var reg = /parseInt\([^,\)]+\)/g,
-            m;
-            while ((m = reg.exec(txt))) {
-                sm.insertText(startpos + reg.lastIndex - 1, ', 10');
+            var reg = /parseInt\([^,\)]+\)/,
+              m;
+            if (sm.getTextRange(errorpos, errorpos + 8) === 'parseInt') {
+                m = reg.exec(sm.getTextRange(errorpos, endpos));
+                if(m){
+                    sm.insertText(errorpos + m[0].length - 1, ', 10');
+                }
+            }else{
+                alert("The line is changed, can't auto fix Missing radix parameter");
+                return;
             }
             break;
         case "Extra comma.":
