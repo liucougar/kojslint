@@ -1,9 +1,10 @@
 #!/bin/bash
-if [ ! -f kojslint.js ]; then
-	echo "automatically download jslint and modify it so it can be used in this extension; Please run this script under chrome/content."
+if [ ! -d chrome ]; then
+	echo "automatically download jslint and modify it so it can be used in this extension; Please run this script under the root dir of kojslint."
 	exit 1
 fi
 
+cd modules
 JSLINT_URL='http://www.jslint.com/jslint.js'
 JSLINT_URL_SRC='https://github.com/douglascrockford/JSLint/raw/master/fulljslint.js'
 #wget --no-check-certificate https://github.com/douglascrockford/JSLint/raw/master/fulljslint.js
@@ -31,12 +32,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-"use strict";
-if (typeof(window.extensions) === "undefined") {
-    window.extensions = {};
-}' > jslint.js
-cat fulljslint.js | sed -e 's/"use strict";//;s/\r//g;s/^\/\/.*//;' >> jslint.js
+var EXPORTED_SYMBOLS=["JSLINT"];' > jslint.js
+cat fulljslint.js | sed -e 's/"use strict";//;s/\r//g;s/^\/\/.*//;' | sed -e 'N;s/^\n//;' >> jslint.js
 rm -f fulljslint.js
-echo "window.extensions.JSLINT=JSLINT;" >> jslint.js
+#echo "window.extensions.JSLINT=JSLINT;" >> jslint.js
 
 echo "successfully downloaded jslint"
