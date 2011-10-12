@@ -11,6 +11,7 @@
     <em:contributor>Ben Smawfield</em:contributor>
     <em:contributor>Jak Spalding</em:contributor>
     <em:type>2</em:type> <!-- type=extension -->
+    <em:updateURL>https://raw.github.com/jakspalding/kojslint/master/update.rdf</em:updateURL>
 
     <em:targetApplication> <!-- Komodo IDE -->
       <Description>
