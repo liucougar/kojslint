@@ -2,7 +2,7 @@
 <RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
   <Description about="urn:mozilla:install-manifest">
-    <em:id>kojslint@jak.cx</em:id>
+    <em:id>kojslint@liucougar.net</em:id>
     <em:name>kojslint</em:name>
     <em:version>2.6</em:version>
     <em:description>JSLint Komodo integration</em:description>
