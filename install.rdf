@@ -4,7 +4,7 @@
   <Description about="urn:mozilla:install-manifest">
     <em:id>kojslint@liucougar.net</em:id>
     <em:name>kojslint</em:name>
-    <em:version>2.6</em:version>
+    <em:version>2.6.20111007</em:version>
     <em:description>JSLint Komodo integration</em:description>
     <em:creator>liucougar</em:creator>
     <em:homepageURL>https://github.com/jakspalding/kojslint</em:homepageURL>
