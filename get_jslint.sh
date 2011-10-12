@@ -10,4 +10,4 @@ JSLINT_URL='https://raw.github.com/douglascrockford/JSLint/master/jslint.js'
 curl $JSLINT_URL -o jslint.js
 echo "window.extensions = window.extensions || {}; window.extensions.JSLINT=JSLINT;" >> jslint.js
 
-echo "successfully downloaded jslint"
+echo "successfully updated jslint"
