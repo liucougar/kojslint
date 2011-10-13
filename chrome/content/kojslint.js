@@ -21,7 +21,7 @@ if (!window.extensions.KOJSLINT) {
     // ID of the custom options container
     //constModeHeadingCustom = 'Custom options', // Heading to display above options in custom mode
     //constModeHeadingDefault = 'Default mode', // Heading to display above options in default mode
-    CURRENT_PREF_VER = 1,
+    CURRENT_PREF_VER = 2,
     constIndentationInputId = 'kojslint2_textbox_indent',
     constOptionsTabId = 'kojslint2_options_tab',
     // ID of the options tab
@@ -148,7 +148,7 @@ if (!window.extensions.KOJSLINT) {
     }
     // allow old preference objects to work with the latest version of JS Lint
     function updatePref(o) {
-        //resetDefaultModes(o);
+    
         if (o.version !== CURRENT_PREF_VER) {
             resetDefaultModes(o);
             globalPrefsSet.setStringPref(prefsName, JSON.encode(o));
@@ -600,7 +600,7 @@ if (!window.extensions.KOJSLINT) {
     // get stored preferences
     function prefsGetPrefsObject() {
         var theObject = {}, // preferences object from the preferences file
-        theString;
+            theString;
 
         globalPrefsSet = Components.classes['@activestate.com/koPrefService;1'].getService(Components.interfaces.koIPrefService).prefs;
 
@@ -611,6 +611,7 @@ if (!window.extensions.KOJSLINT) {
                     theObject = JSON.decode(theString);
                 } catch (err) {
                     //failed to decode the JSON string, just ignore it
+                    console.warn('Failed to decode JSON string... ignoring.');
                 }
             }
         }
@@ -1128,7 +1129,7 @@ if (!window.extensions.KOJSLINT) {
             // no errors number to show in tab title
             elErrorsTab.setAttribute('label', constErrorsTabText);
 
-            alert('No errors found');
+            //alert('No errors found');
 
             // focus on function report panel
             ko.uilayout.ensureTabShown(constFunctionsTabId, true);
