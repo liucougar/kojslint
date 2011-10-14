@@ -13,7 +13,7 @@
               <id>{b1042fb5-9e9c-11db-b107-000d935d3368}</id>
               <minVersion>4.1</minVersion>
               <maxVersion>6.*</maxVersion>
-              <updateLink>https://github.com/jakspalding/kojslint/raw/master/kojslint.xpi</updateLink>
+              <updateLink>https://github.com/liucougar/kojslint/raw/master/kojslint.xpi</updateLink>
             </r:Description>
           </targetApplication>
           <targetApplication>
@@ -21,7 +21,7 @@
               <id>{36E66FA0-F259-11D9-850E-000D935D3368}</id>
               <minVersion>4.1</minVersion>
               <maxVersion>6.*</maxVersion>
-              <updateLink>https://github.com/jakspalding/kojslint/raw/master/kojslint.xpi</updateLink>
+              <updateLink>https://github.com/liucougar/kojslint/raw/master/kojslint.xpi</updateLink>
             </r:Description>
           </targetApplication>
         </r:Description>
@@ -29,6 +29,6 @@
     </r:Seq>
   </updates>
   <version>2.6.20111007</version>
-  <updateLink>https://github.com/jakspalding/kojslint/raw/master/kojslint.xpi</updateLink>
+  <updateLink>https://github.com/liucougar/kojslint/raw/master/kojslint.xpi</updateLink>
 </r:Description>
 </r:RDF>

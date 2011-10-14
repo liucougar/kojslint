@@ -7,11 +7,11 @@
     <em:version>2.6.20111007</em:version>
     <em:description>JSLint Komodo integration</em:description>
     <em:creator>liucougar</em:creator>
-    <em:homepageURL>https://github.com/jakspalding/kojslint</em:homepageURL>
+    <em:homepageURL>https://github.com/liucougar/kojslint</em:homepageURL>
     <em:contributor>Ben Smawfield</em:contributor>
     <em:contributor>Jak Spalding</em:contributor>
     <em:type>2</em:type> <!-- type=extension -->
-    <em:updateURL>https://raw.github.com/jakspalding/kojslint/master/update.rdf</em:updateURL>
+    <em:updateURL>https://raw.github.com/liucougar/kojslint/master/update.rdf</em:updateURL>
 
     <em:targetApplication> <!-- Komodo IDE -->
       <Description>
