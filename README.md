@@ -18,7 +18,7 @@ FEATURES
 - profiles can be locked (it can't be changed/deleted until unlocked)
 - auto-fix some common jslint warnings
 - all jslint warnings on the same line are grouped in the "JSLint errors" output tab
-- bundled with JSLint 2010-12-08
+- bundled with JSLint 2011-10-07
 
 AutoFix
 -------
@@ -28,6 +28,17 @@ Download/Install
 ----------------
 This extension can be installed through `Tools` -> `Add-ons`, `Get Add-ons` tab.
 
+For Developers
+--------------
+
+The JSLint.js file can be auto-updated by running ./get_jslint.sh
+You can build an XPI by running ./build.sh
+The parser.php file automates the process of changing the comments from the jslint.js file such as
+  //     adsafe     true, if ADsafe rules should be enforced
+into a checkbox that can be used in komodo.xul, such as
+  <checkbox id="adsafe" class="kojslint_checkbox" label="true, if ADsafe rules should be enforced" />
+To use it, pipe the relevent comments into it, and capture the output.
+  
 SOURCE/BUGS/LICENSE
 ------------------
 Source code is available from [github].

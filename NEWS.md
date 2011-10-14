@@ -8,3 +8,9 @@
 - remove JSON2, use nsIJSON instead
 - separate out jslint.js
 - forked from kjslint 2.1.3
+
+2011-10-14 KoJSLint 2.6 (changes since KoJSLint 2.5):
+
+- updated JSLint to 2011-10-07, updated version to 2.6.20111007 so JSLint can be updated without changes to major/minor version number
+- added auto-update capabilities
+- fixed/added scripts to aid development
