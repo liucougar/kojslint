@@ -1,4 +1,3 @@
-'use strict';
 
 if (!window.extensions.KOJSLINT) {
     window.extensions.KOJSLINT = {
@@ -22,7 +21,7 @@ if (!window.extensions.KOJSLINT) {
     // ID of the custom options container
     //constModeHeadingCustom = 'Custom options', // Heading to display above options in custom mode
     //constModeHeadingDefault = 'Default mode', // Heading to display above options in default mode
-    CURRENT_PREF_VER = 1,
+    CURRENT_PREF_VER = 2,
     constIndentationInputId = 'kojslint2_textbox_indent',
     constOptionsTabId = 'kojslint2_options_tab',
     // ID of the options tab
@@ -131,35 +130,25 @@ if (!window.extensions.KOJSLINT) {
 
         o.options = {};
         o.options['default'] = {
-            bitwise: true,
-            // if bitwise operators should not be allowed
-            eqeqeq: true,
-            // if === should be required
-            immed: true,
-            // if immediate invocations must be wrapped in parens
             indent: 4,
             maxerr: 50,
             maxlen: 250,
             newcap: true,
-            // if constructor names must be capitalized
-            nomen: true,
-            // if names should be checked
-            onevar: true,
-            // if only one var statement per function should be allowed
-            plusplus: true,
-            // if increment/decrement should not be allowed
             predef: '',
-            regexp: true,
-            // if the . should not be allowed in regexp literals
+            white: true,
+            vars: true,
             undef: true,
-            // if variables should be declared before used
-            white: true // if strict whitespace rules apply
+            nomen: true,
+            regexp: true,
+            plusplus: true,
+            bitwise: true,
+            newcap: true
         };
         o.options.custom = copyMode(o.options['default']);
     }
     // allow old preference objects to work with the latest version of JS Lint
     function updatePref(o) {
-        //resetDefaultModes(o);
+    
         if (o.version !== CURRENT_PREF_VER) {
             resetDefaultModes(o);
             globalPrefsSet.setStringPref(prefsName, JSON.encode(o));
@@ -186,12 +175,10 @@ if (!window.extensions.KOJSLINT) {
         theCheckbox, // current checkbox
         thePref; // current preference
 
-        //         currentConfName = 'custom';
-
         var modeobj = findModeObject(currentConfName),
         locked = modeobj && modeobj.locked;
         modeLockedCheckbox.checked = locked;
-        //elOptionsHeading.setAttribute('label', constModeHeadingCustom);
+
         for (i = 0; i < length; i += 1) {
             theCheckbox = elsOptionsCheckboxes[i];
             thePref = theCheckbox.id;
@@ -199,7 +186,6 @@ if (!window.extensions.KOJSLINT) {
             theCheckbox.checked = prefsObject.options[currentConfName][thePref];
             theCheckbox.className = (locked && !theCheckbox.checked) ? 'hidden': '';
         }
-        //elOptionsRadios.selectedIndex = 1;
     }
 
     // update a preference
@@ -273,7 +259,6 @@ if (!window.extensions.KOJSLINT) {
     // observe changes to the options
     function observeOptionsEvents() {
         elCustomOptionsContainer.addEventListener('click', eventOptionClicked, false);
-        //elOptionsRadios.addEventListener('click', eventModeSelected, false);
         elIndentationInput.addEventListener('change', eventIndentationChanged, false);
         elIndentationInput.addEventListener('keyup', eventIndentationChanged, false);
         elMaxErrInput.addEventListener('change', eventMaxErrChanged, false);
@@ -615,7 +600,7 @@ if (!window.extensions.KOJSLINT) {
     // get stored preferences
     function prefsGetPrefsObject() {
         var theObject = {}, // preferences object from the preferences file
-        theString;
+            theString;
 
         globalPrefsSet = Components.classes['@activestate.com/koPrefService;1'].getService(Components.interfaces.koIPrefService).prefs;
 
@@ -626,6 +611,7 @@ if (!window.extensions.KOJSLINT) {
                     theObject = JSON.decode(theString);
                 } catch (err) {
                     //failed to decode the JSON string, just ignore it
+                    console.warn('Failed to decode JSON string... ignoring.');
                 }
             }
         }
@@ -1143,7 +1129,7 @@ if (!window.extensions.KOJSLINT) {
             // no errors number to show in tab title
             elErrorsTab.setAttribute('label', constErrorsTabText);
 
-            alert('No errors found');
+            //alert('No errors found');
 
             // focus on function report panel
             ko.uilayout.ensureTabShown(constFunctionsTabId, true);
