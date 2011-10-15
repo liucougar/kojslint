@@ -39,35 +39,38 @@
 						<checkbox label="Locked" id="kojslint_mode_locked" class="kojslint_checkbox" />
 					</hbox>
 					<groupbox id="kojslint2_groupbox_custom_options">
-						<checkbox id="passfail" class="kojslint_checkbox" label="Stop on first error" />
-						<checkbox id="white" checked="true" class="kojslint_checkbox" label="Strict white space" />
-						<checkbox id="browser" class="kojslint_checkbox" label="Assume a browser" />
-						<checkbox id="devel" class="kojslint_checkbox" label="Assume console, alert, ..." />
-						<checkbox id="widget" class="kojslint_checkbox" label="Assume a Yahoo Widget" />
-						<checkbox id="windows" class="kojslint_checkbox" label="Assume Windows" />
-						<checkbox id="rhino" class="kojslint_checkbox" label="Assume Rhino" />
-						<checkbox id="safe" class="kojslint_checkbox" label="Safe Subset" />
-						<checkbox id="adsafe" class="kojslint_checkbox" label="ADsafe" />
-						<checkbox id="debug" class="kojslint_checkbox" label="Tolerate debugger statements"/>
-						<checkbox id="evil" class="kojslint_checkbox" label="Tolerate eval" />
-						<checkbox id="laxbreak" class="kojslint_checkbox" label="Tolerate sloppy line breaking" />
-						<checkbox id="forin" class="kojslint_checkbox" label="Tolerate unfiltered for in" />
-						<checkbox id="sub" class="kojslint_checkbox" label="Tolerate inefficient subscripting" />
-						<checkbox id="css" class="kojslint_checkbox" label="Tolerate CSS workarounds" />
-						<checkbox id="cap" class="kojslint_checkbox" label="Tolerate HTML case" />
-						<checkbox id="on" class="kojslint_checkbox" label="Tolerate HTML event handlers" />
-						<checkbox id="fragment" class="kojslint_checkbox" label="Tolerate HTML fragments" />
-						<checkbox id="es5" class="kojslint_checkbox" label="Tolerate ES5 syntax" />
-						<checkbox id="onevar" checked="true" class="kojslint_checkbox" label="Allow one var statement per function" />
-						<checkbox id="undef" checked="true" class="kojslint_checkbox" label="Disallow undefined variables" />
-						<checkbox id="nomen" checked="true" class="kojslint_checkbox" label="Disallow dangling _ in identifiers" />
-						<checkbox id="eqeqeq" checked="true" class="kojslint_checkbox" label="Disallow == and !=" />
-						<checkbox id="plusplus" checked="true" class="kojslint_checkbox" label="Disallow ++ and --" />
-						<checkbox id="bitwise" checked="true" class="kojslint_checkbox" label="Disallow bitwise operators" />
-						<checkbox id="regexp" checked="true" class="kojslint_checkbox" label="Disallow insecure . and [^...] in /RegExp/" />
-						<checkbox id="newcap" checked="true" class="kojslint_checkbox" label="Require Initial Caps for constructors" />
-						<checkbox id="immed" checked="true" class="kojslint_checkbox" label="Require parens around immediate invocations" />
-						<checkbox id="strict" class="kojslint_checkbox" label="Require 'use strict';" />
+                                            <checkbox id="adsafe" class="kojslint_checkbox" label="true, if ADsafe rules should be enforced" />
+                                            <checkbox id="bitwise" class="kojslint_checkbox" label="true, if bitwise operators should be allowed" />
+                                            <checkbox id="browser" class="kojslint_checkbox" label="true, if the standard browser globals should be predefined" />
+                                            <checkbox id="cap" class="kojslint_checkbox" label="true, if upper case HTML should be allowed" />
+                                            <checkbox id="confusion" class="kojslint_checkbox" label="true, if types can be used inconsistently" />
+                                            <checkbox id="continue" class="kojslint_checkbox" label="true, if the continuation statement should be tolerated" />
+                                            <checkbox id="css" class="kojslint_checkbox" label="true, if CSS workarounds should be tolerated" />
+                                            <checkbox id="debug" class="kojslint_checkbox" label="true, if debugger statements should be allowed" />
+                                            <checkbox id="devel" class="kojslint_checkbox" label="true, if logging should be allowed (console, alert, etc.)" />
+                                            <checkbox id="eqeq" class="kojslint_checkbox" label="true, if == should be allowed" />
+                                            <checkbox id="es5" class="kojslint_checkbox" label="true, if ES5 syntax should be allowed" />
+                                            <checkbox id="evil" class="kojslint_checkbox" label="true, if eval should be allowed" />
+                                            <checkbox id="forin" class="kojslint_checkbox" label="true, if for in statements need not filter" />
+                                            <checkbox id="fragment" class="kojslint_checkbox" label="true, if HTML fragments should be allowed" />
+                                            <checkbox id="newcap" class="kojslint_checkbox" label="true, if constructor names capitalization is ignored" />
+                                            <checkbox id="node" class="kojslint_checkbox" label="true, if Node.js globals should be predefined" />
+                                            <checkbox id="nomen" class="kojslint_checkbox" label="true, if names may have dangling _" />
+                                            <checkbox id="on" class="kojslint_checkbox" label="true, if HTML event handlers should be allowed" />
+                                            <checkbox id="passfail" class="kojslint_checkbox" label="true, if the scan should stop on first error" />
+                                            <checkbox id="plusplus" class="kojslint_checkbox" label="true, if increment/decrement should be allowed" />
+                                            <checkbox id="properties" class="kojslint_checkbox" label="true, if all property names must be declared with /*properties*/" />
+                                            <checkbox id="regexp" class="kojslint_checkbox" label="true, if the . should be allowed in regexp literals" />
+                                            <checkbox id="rhino" class="kojslint_checkbox" label="true, if the Rhino environment globals should be predefined" />
+                                            <checkbox id="undef" class="kojslint_checkbox" label="true, if variables can be declared out of order" />
+                                            <checkbox id="unparam" class="kojslint_checkbox" label="true, if unused parameters should be tolerated" />
+                                            <checkbox id="safe" class="kojslint_checkbox" label="true, if use of some browser features should be restricted" />
+                                            <checkbox id="sloppy" class="kojslint_checkbox" label="true, if the 'use strict'; pragma is optional" />
+                                            <checkbox id="sub" class="kojslint_checkbox" label="true, if all forms of subscript notation are tolerated" />
+                                            <checkbox id="vars" class="kojslint_checkbox" label="true, if multiple var statements per function should be allowed" />
+                                            <checkbox id="white" class="kojslint_checkbox" label="true, if sloppy whitespace is tolerated" />
+                                            <checkbox id="widget" class="kojslint_checkbox" label="true  if the Yahoo Widgets globals should be predefined" />
+                                            <checkbox id="windows" class="kojslint_checkbox" label="true, if MS Windows-specific globals should be predefined" />
 					</groupbox>
 				</groupbox>
 				<groupbox>
